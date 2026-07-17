@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.wrangler/
+
+# Logs
+*.log
+logs/
+.pm2/
+
+# Env / secrets
+.env
+.dev.vars
+
+# OS
+.DS_Store
+
+# Backups
+*.tar.gz
+*.bak
