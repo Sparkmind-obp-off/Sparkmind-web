@@ -17,6 +17,10 @@ app.use('/static/*', serveStatic({ root: './public' }))
 
 // Inline SVG favicon (avoids 500 from serveStatic on missing /favicon.ico)
 const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0a0a0a"/><text x="32" y="44" font-size="38" text-anchor="middle" fill="#d4af37" font-family="serif" font-weight="700">S</text></svg>`
+const notFoundResponse = () => new Response(
+  `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>404 — SparkMind</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"><link href="/static/style.css" rel="stylesheet"></head><body><main class="page center-page"><span class="section-number">Halaman tidak ditemukan</span><h1 class="display">404</h1><p class="muted">Alamat ini tidak tersedia. Kembali ke <a class="text-link" href="/">beranda SparkMind</a>.</p></main></body></html>`,
+  { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+)
 app.get('/favicon.ico', (c) => c.body(FAVICON, 200, { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' }))
 app.get('/favicon.svg', (c) => c.body(FAVICON, 200, { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' }))
 
@@ -263,7 +267,7 @@ app.get('/belajar', (c) => c.html(
 
 app.get('/belajar/:slug', (c) => {
   const article = findArticle(c.req.param('slug'))
-  if (!article) return c.notFound()
+  if (!article) return notFoundResponse()
   return c.html(
     <Layout title={`${article.title} — SparkMind`} description={article.summary}>
       <Nav active="learn" />
@@ -653,17 +657,7 @@ app.get('/internal/barberkas', (c) => {
 })
 
 // 404
-app.notFound((c) => {
-  const body = `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>` +
-    `<meta name="viewport" content="width=device-width, initial-scale=1.0"/>` +
-    `<title>404 — SparkMind</title>` +
-    `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>` +
-    `<link href="/static/style.css" rel="stylesheet"/></head>` +
-    `<body><main class="page center-page">` +
-    `<h1 class="display">404</h1>` +
-    `<p class="muted">Halaman yang Anda cari tidak ditemukan. Kembali ke <a href="/">beranda SparkMind</a>.</p>` +
-    `</main></body></html>`
-  return c.newResponse(body, 404, { 'Content-Type': 'text/html; charset=utf-8' })
-})
+app.get('*', () => notFoundResponse())
+app.notFound(() => notFoundResponse())
 
 export default app
