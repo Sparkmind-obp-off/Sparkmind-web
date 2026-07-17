@@ -1,13 +1,14 @@
 import type { Child } from 'hono/jsx'
 
-export const Layout = (props: { title: string; children?: Child }) => {
+export const Layout = (props: { title: string; description?: string; noIndex?: boolean; children?: Child }) => {
   return (
     <html lang="id">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{props.title}</title>
-        <meta name="description" content="SparkMind Sovereign Agent Foundry — Indonesia's first Sovereign Agent Foundry. Forge sovereign agents. Own your edge." />
+        <meta name="description" content={props.description || 'SparkMind adalah rumah produk AI untuk UMKM Indonesia sekaligus tempat belajar membangun brand dan bisnis digital secara sistematis.'} />
+        {props.noIndex ? <meta name="robots" content="noindex, nofollow" /> : null}
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />

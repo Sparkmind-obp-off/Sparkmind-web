@@ -147,9 +147,9 @@ app.get('/', (c) => {
 // ════════════════════════════════════════════════════════════════
 // DOCTRINE viewer
 // ════════════════════════════════════════════════════════════════
-app.get('/doctrine', (c) => {
+app.get('/internal/doctrine', (c) => {
   return c.html(
-    <Layout title={`Doctrine ${META.doctrineVersion} — ${META.name}`}>
+    <Layout title={`Doctrine ${META.doctrineVersion} — ${META.name}`} noIndex>
       <Nav active="doctrine" />
       <main class="page">
         <section class="page-head">
@@ -214,10 +214,10 @@ app.get('/doctrine', (c) => {
 // ════════════════════════════════════════════════════════════════
 // SPRINT tracker (D0-D14)
 // ════════════════════════════════════════════════════════════════
-app.get('/sprint', (c) => {
+app.get('/internal/sprint', (c) => {
   const today = currentSprintDay()
   return c.html(
-    <Layout title={`Sprint Tracker — ${META.name}`}>
+    <Layout title={`Sprint Tracker — ${META.name}`} noIndex>
       <Nav active="sprint" />
       <main class="page">
         <section class="page-head">
@@ -264,10 +264,10 @@ app.get('/sprint', (c) => {
 // ════════════════════════════════════════════════════════════════
 // REVENUE ledger (Rp 1M D30 path)
 // ════════════════════════════════════════════════════════════════
-app.get('/revenue', (c) => {
+app.get('/internal/revenue', (c) => {
   const totalChannels = REVENUE.reduce((s, r) => s + r.targetIdr, 0)
   return c.html(
-    <Layout title={`Revenue Ledger — ${META.name}`}>
+    <Layout title={`Revenue Ledger — ${META.name}`} noIndex>
       <Nav active="revenue" />
       <main class="page">
         <section class="page-head">
@@ -320,9 +320,9 @@ const bkBadge = (s: string) => {
   return <span class={`badge ${cls}`}>{s}</span>
 }
 
-app.get('/barberkas', (c) => {
+app.get('/internal/barberkas', (c) => {
   return c.html(
-    <Layout title={`BarberKas — Capster Commit Hub · ${META.name}`}>
+    <Layout title={`BarberKas — Capster Commit Hub · ${META.name}`} noIndex>
       <Nav active="barberkas" />
       <main class="page">
         <section class="page-head" id="barberkas-hero">
@@ -437,12 +437,12 @@ app.get('/barberkas', (c) => {
 app.notFound((c) => {
   const body = `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>` +
     `<meta name="viewport" content="width=device-width, initial-scale=1.0"/>` +
-    `<title>404 — SparkMind Sovereign</title>` +
+    `<title>404 — SparkMind</title>` +
     `<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>` +
     `<link href="/static/style.css" rel="stylesheet"/></head>` +
     `<body><main class="page center-page">` +
     `<h1 class="display">404</h1>` +
-    `<p class="muted">Halaman ini belum di-forge. Kembali ke <a href="/">Foundry</a>.</p>` +
+    `<p class="muted">Halaman yang Anda cari tidak ditemukan. Kembali ke <a href="/">beranda SparkMind</a>.</p>` +
     `</main></body></html>`
   return c.newResponse(body, 404, { 'Content-Type': 'text/html; charset=utf-8' })
 })

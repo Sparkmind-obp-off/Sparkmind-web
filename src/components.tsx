@@ -1,33 +1,32 @@
-import { META, LEGAL, type Brand } from './data'
+import { LEGAL, type Brand } from './data'
 
-// ════════════════════════════════════════════════════════════════
-// Shared view fragments — Nav / Footer / badges
-// ════════════════════════════════════════════════════════════════
 export const statusBadge = (s: Brand['status']) => {
   const map: Record<Brand['status'], { cls: string; label: string }> = {
-    'DNS-FIX': { cls: 'b-red', label: 'DNS P0 FIX' },
-    'LIVE': { cls: 'b-green', label: 'LIVE' },
-    'PARTIAL': { cls: 'b-amber', label: 'PARTIAL' },
-    'REVIVING': { cls: 'b-blue', label: 'REVIVING' },
-    'NEW': { cls: 'b-red', label: 'NEW' }
+    'DNS-FIX': { cls: 'b-red', label: 'DALAM PERBAIKAN' },
+    'LIVE': { cls: 'b-green', label: 'TERSEDIA' },
+    'PARTIAL': { cls: 'b-amber', label: 'BETA' },
+    'REVIVING': { cls: 'b-blue', label: 'DIKEMBANGKAN' },
+    'NEW': { cls: 'b-red', label: 'BARU' }
   }
-  const m = map[s]
-  return <span class={`badge ${m.cls}`}>{m.label}</span>
+  const item = map[s]
+  return <span class={`badge ${item.cls}`}>{item.label}</span>
 }
 
 export const Nav = (props: { active: string }) => (
   <header id="topnav">
-    <a href="/" class="brand-mark">
-      <i class="fas fa-industry"></i>
-      <span>SparkMind <b>Sovereign</b></span>
+    <a href="/" class="brand-mark" aria-label="SparkMind — Beranda">
+      <span class="brand-symbol" aria-hidden="true">S</span>
+      <span>Spark<span>Mind</span></span>
     </a>
-    <nav aria-label="Primary">
-      <a href="/" class={props.active === 'home' ? 'active' : ''}>Foundry</a>
-      <a href="/doctrine" class={props.active === 'doctrine' ? 'active' : ''}>Doctrine</a>
-      <a href="/sprint" class={props.active === 'sprint' ? 'active' : ''}>Sprint</a>
-      <a href="/revenue" class={props.active === 'revenue' ? 'active' : ''}>Revenue</a>
-      <a href="/barberkas" class={props.active === 'barberkas' ? 'active' : ''}>BarberKas</a>
-      <a href="/legal" class={props.active === 'legal' ? 'active' : ''}>Legal</a>
+    <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="primary-nav">
+      <i class="fas fa-bars" aria-hidden="true"></i>
+    </button>
+    <nav id="primary-nav" aria-label="Navigasi utama">
+      <a href="/" class={props.active === 'home' ? 'active' : ''}>Beranda</a>
+      <a href="/produk" class={props.active === 'products' ? 'active' : ''}>Produk</a>
+      <a href="/belajar" class={props.active === 'learn' ? 'active' : ''}>Belajar</a>
+      <a href="/tentang" class={props.active === 'about' ? 'active' : ''}>Tentang Kami</a>
+      <a href="/kontak" class={props.active === 'contact' ? 'active' : ''}>Kontak</a>
     </nav>
   </header>
 )
@@ -35,43 +34,40 @@ export const Nav = (props: { active: string }) => (
 export const Footer = () => (
   <footer id="site-footer">
     <div class="foot-grid">
-      <div>
-        <div class="brand-mark"><i class="fas fa-industry"></i><span>SparkMind <b>Sovereign</b></span></div>
-        <p class="muted">{META.category}</p>
-        <p class="muted small">"{META.taglineEN}" / "{META.taglineID}"</p>
-        <p class="muted small legal-entity-line">
-          <i class="fas fa-building-shield"></i> Dioperasikan oleh <b>{LEGAL.companyName}</b><br />
-          {LEGAL.companyType} · {LEGAL.registrationNo}
-        </p>
-      </div>
-      <div>
-        <h4>Foundry</h4>
-        <a href="/doctrine">Doctrine {META.doctrineVersion}</a>
-        <a href="/sprint">Sprint Tracker</a>
-        <a href="/revenue">Revenue Ledger</a>
-        <a href="/barberkas">BarberKas Hub</a>
-      </div>
-      <div>
-        <h4>Legal</h4>
-        <a href="/legal">Legal Hub</a>
-        <a href="/legal/ownership">Pernyataan Kepemilikan</a>
+      <section>
+        <a href="/" class="brand-mark" aria-label="SparkMind — Beranda">
+          <span class="brand-symbol" aria-hidden="true">S</span>
+          <span>Spark<span>Mind</span></span>
+        </a>
+        <p class="muted footer-statement">Produk AI yang benar-benar jalan dan pengetahuan yang membantu bisnis kecil membangun fondasi digitalnya sendiri.</p>
+      </section>
+      <section>
+        <h2>Jelajahi</h2>
+        <a href="/produk">Produk</a>
+        <a href="/belajar">Belajar</a>
+        <a href="/tentang">Tentang Kami</a>
+        <a href="/kontak">Kontak</a>
+      </section>
+      <section>
+        <h2>Legal</h2>
+        <a href="/legal">Pusat Legal</a>
+        <a href="/legal/ownership">Kepemilikan</a>
         <a href="/legal/terms">Syarat &amp; Ketentuan</a>
-        <a href="/legal/privacy">Kebijakan Privasi</a>
-        <a href="/legal/refund">Kebijakan Refund</a>
+        <a href="/legal/privacy">Privasi</a>
+        <a href="/legal/refund">Refund</a>
         <a href="/legal/disclaimer">Disclaimer</a>
-      </div>
-      <div>
-        <h4>Lock Metadata</h4>
-        <p class="muted small">Owner: {META.owner}</p>
-        <p class="muted small">Entitas: {LEGAL.companyName}</p>
-        <p class="muted small">Domisili: {LEGAL.domicile}</p>
-        <p class="muted small">Doctrine: {META.doctrineDate}</p>
-        <p class="muted small">Stack: 100% Cloudflare · Hono</p>
-      </div>
+      </section>
+      <section>
+        <h2>Badan Hukum</h2>
+        <p><b>{LEGAL.companyName}</b></p>
+        <p class="muted small">{LEGAL.companyType}</p>
+        <p class="muted small">No. {LEGAL.registrationNo}</p>
+        <p class="muted small">Domisili {LEGAL.domicile}</p>
+      </section>
     </div>
     <div class="foot-bar">
-      <span>🔒 {META.status}</span>
-      <span>© 2026 {LEGAL.companyName} · SparkMind Ecosystem · Public-safe</span>
+      <span>© 2026 {LEGAL.companyName}</span>
+      <span>Bangun bisnis digitalmu di atas fondasi sendiri.</span>
     </div>
   </footer>
 )
