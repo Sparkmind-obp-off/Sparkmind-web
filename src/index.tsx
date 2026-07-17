@@ -6,7 +6,8 @@ import { Nav, Footer, statusBadge } from './components'
 import legal from './legal'
 import {
   META, PILLARS, BRANDS, SPRINT, REVENUE, D90_MIX, TARGETS,
-  DECISIONS, GAPS, GAP_STATS, MARKET, LEGAL, BARBERKAS, currentSprintDay, rupiah
+  DECISIONS, GAPS, GAP_STATS, MARKET, LEGAL, BARBERKAS, PUBLIC_META,
+  PUBLIC_PRODUCTS, ARTICLES, findArticle, currentSprintDay, rupiah
 } from './data'
 
 const app = new Hono()
@@ -64,85 +65,140 @@ app.get('/api/legal', (c) => c.json({
 }))
 
 // ════════════════════════════════════════════════════════════════
-// HOME — Mother Brand Landing (DoD 2: Doctrine v11.0 published)
+// PUBLIC HOME — SparkMind digital brand company
 // ════════════════════════════════════════════════════════════════
-app.get('/', (c) => {
-  const day = currentSprintDay()
-  return c.html(
-    <Layout title={`${META.name} — ${META.category}`}>
-      <Nav active="home" />
-
-      <main>
-        <section id="hero-section" class="hero">
-          <div class="hero-inner">
-            <span class="kicker"><i class="fas fa-lock"></i> {META.status}</span>
-            <h1 class="display">THE SOVEREIGN<br />AGENT FOUNDRY</h1>
-            <p class="lead-en">{META.taglineEN}</p>
-            <p class="lead-id">{META.taglineID}</p>
-            <p class="hero-desc">
-              {META.category}. Kami tempa agen AI khusus untuk UMKM Indonesia —
-              jalan di edge sendiri, ngomong Bahasa Indonesia, terima Rupiah, dan nggak tunduk ke cloud asing.
-            </p>
-            <div class="hero-cta">
-              <a href="#brands-section" class="btn btn-gold"><i class="fas fa-compass"></i> Jelajahi Foundry</a>
-              <a href="/doctrine" class="btn btn-ghost"><i class="fas fa-scroll"></i> Baca Doctrine {META.doctrineVersion}</a>
-            </div>
-            <div class="hero-meta">
-              <span><i class="fas fa-calendar-day"></i> Sprint Day <b>D{day}</b> / D14</span>
-              <span><i class="fas fa-bullseye"></i> Target D30 <b>{rupiah(META.revenueD30Target)}</b></span>
-              <span><i class="fas fa-code-branch"></i> {META.repo}</span>
-            </div>
+app.get('/', (c) => c.html(
+  <Layout title="SparkMind — Produk AI & Sistem Brand Digital untuk UMKM Indonesia" description={PUBLIC_META.positioning}>
+    <Nav active="home" />
+    <main>
+      <section id="hero-section" class="hero home-hero">
+        <div class="hero-inner">
+          <span class="eyebrow">Digital Brand Company · Indonesia</span>
+          <h1 class="display">Bangun bisnis digitalmu<br /><em>di atas fondasi sendiri.</em></h1>
+          <p class="hero-desc">{PUBLIC_META.positioning}</p>
+          <div class="hero-cta">
+            <a href="/produk" class="btn btn-gold">Lihat Produk <i class="fas fa-arrow-right"></i></a>
+            <a href="/belajar" class="btn btn-ghost">Mulai Belajar</a>
           </div>
-        </section>
+          <p class="proof-note"><span></span> Dibangun dari pekerjaan nyata, bukan sekadar tren.</p>
+        </div>
+      </section>
 
-        <section class="pillars" aria-label="Sovereignty Pillars">
-          {PILLARS.map((p) => (
-            <article class="pillar-card">
-              <i class={`fas ${p.icon}`}></i>
-              <h3>{p.title}</h3>
-              <p>{p.desc}</p>
-            </article>
+      <section id="masalah" class="section split-section">
+        <div class="section-intro">
+          <span class="section-number">01 · Masalah</span>
+          <h2>Ramai di digital belum tentu membangun bisnis.</h2>
+        </div>
+        <div class="issue-list">
+          {[
+            ['Bingung harus mulai dari mana', 'Pilihan kanal dan alat terus bertambah, tetapi arah bisnis tetap kabur.'],
+            ['Tergantung pada satu platform', 'Audiens tumbuh di ruang yang aturan dan jangkauannya tidak kita kendalikan.'],
+            ['Konten banyak, hasil bisnis minim', 'Aktivitas berjalan tanpa sistem yang menghubungkan perhatian dengan penawaran.'],
+            ['AI justru menambah kebingungan', 'Alat dibeli karena tren, bukan karena menyelesaikan pekerjaan yang jelas.']
+          ].map((item, index) => (
+            <article class="issue-item"><span>0{index + 1}</span><div><h3>{item[0]}</h3><p>{item[1]}</p></div></article>
           ))}
-        </section>
+        </div>
+      </section>
 
-        <section id="brands-section" class="section">
-          <div class="section-head">
-            <h2>Foundry Products</h2>
-            <p class="muted">7 sub-brand AKTIF — no parking (Doctrine {META.doctrineVersion} · The Mold)</p>
-          </div>
-          <div class="brand-grid">
-            {BRANDS.map((b) => (
-              <article class="brand-card" style={`--accent:${b.accent}`}>
-                <div class="brand-top">
-                  <i class={`fas ${b.icon}`}></i>
-                  {statusBadge(b.status)}
-                </div>
-                <h3>{b.name}</h3>
-                <p class="brand-tag">{b.tagline}</p>
-                <div class="brand-foot">
-                  <span class="brand-focus">{b.focus}</span>
-                  <span class="brand-price">{b.pricing}</span>
-                </div>
-                <code class="brand-url">{b.subdomain}</code>
-              </article>
-            ))}
-          </div>
-        </section>
+      <section id="solusi" class="section solution-section">
+        <div class="section-head centered">
+          <span class="section-number">02 · Cara kami bekerja</span>
+          <h2>Tiga lapis fondasi. Urutannya penting.</h2>
+          <p class="muted">Teknologi bekerja lebih baik ketika keputusan bisnisnya sudah jelas.</p>
+        </div>
+        <div class="principle-grid">
+          {[
+            ['01', 'Strategi', 'Menentukan masalah yang layak diselesaikan dan arah yang masuk akal untuk bisnis Anda.'],
+            ['02', 'Sistem', 'Mengubah keputusan menjadi proses yang bisa dijalankan, diukur, dan diperbaiki.'],
+            ['03', 'AI', 'Mempercepat bagian yang tepat. AI adalah alat di dalam sistem, bukan tujuan akhirnya.']
+          ].map((item) => (
+            <article class="principle-card"><span>{item[0]}</span><i class="fas fa-arrow-down"></i><h3>{item[1]}</h3><p>{item[2]}</p></article>
+          ))}
+        </div>
+      </section>
 
-        <section class="section market-band">
-          <div class="section-head"><h2>Market Intel</h2><p class="muted">The Hammer · 2026</p></div>
-          <div class="market-grid">
-            {MARKET.map((m) => (
-              <div class="market-stat"><b>{m.value}</b><span>{m.label}</span></div>
-            ))}
-          </div>
-        </section>
-      </main>
+      <section id="audiens" class="section">
+        <div class="section-head">
+          <span class="section-number">03 · Dua pintu masuk</span>
+          <h2>Datang untuk memakai. Atau datang untuk memahami.</h2>
+        </div>
+        <div class="audience-grid">
+          <article class="audience-card operator-card">
+            <span class="card-label">Jalankan lebih rapi</span>
+            <div class="audience-icon"><i class="fas fa-store"></i></div>
+            <h3>Untuk Operator UMKM</h3>
+            <p>Produk AI siap pakai untuk pekerjaan nyata—dengan fungsi, harga, dan batasan yang jelas.</p>
+            <a href="/produk">Temukan produk yang tepat <i class="fas fa-arrow-right"></i></a>
+          </article>
+          <article class="audience-card learner-card">
+            <span class="card-label">Bangun lebih sadar</span>
+            <div class="audience-icon"><i class="fas fa-book-open"></i></div>
+            <h3>Untuk Pembelajar</h3>
+            <p>Framework dan studi kasus untuk freelancer, solopreneur, creator, dan agensi kecil.</p>
+            <a href="/belajar">Buka perpustakaan <i class="fas fa-arrow-right"></i></a>
+          </article>
+        </div>
+      </section>
 
-      <Footer />
-    </Layout>
-  )
-})
+      <section id="produk" class="section">
+        <div class="section-head section-head-row">
+          <div><span class="section-number">04 · Produk</span><h2>AI yang punya pekerjaan jelas.</h2></div>
+          <a class="text-link" href="/produk">Lihat semua produk <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="product-grid featured-products">
+          {PUBLIC_PRODUCTS.slice(0, 4).map((product) => (
+            <a class="product-card" style={`--accent:${product.accent}`} href={`https://${product.subdomain}`} target="_blank" rel="noopener">
+              <div class="product-icon"><i class={`fas ${product.icon}`}></i></div>
+              <span class="product-type">Produk SparkMind</span>
+              <h3>{product.name}</h3>
+              <p>{product.tagline}</p>
+              <footer><strong>{product.pricing}</strong><i class="fas fa-arrow-up-right-from-square"></i></footer>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="bukti" class="section proof-section">
+        <div class="proof-visual" aria-hidden="true"><span class="scissor-ring"><i class="fas fa-scissors"></i></span><small>BARBERKAS · DOGFOODING</small></div>
+        <div class="proof-copy">
+          <span class="section-number">05 · Bukti nyata</span>
+          <h2>Kami memakai produk kami sendiri sebelum menjualnya.</h2>
+          <p>BarberKas dipakai langsung oleh founder SparkMind dalam pekerjaannya sebagai capster. Booking, transaksi, dan gesekan operasionalnya ditemui di tempat kerja sungguhan—bukan hanya di ruang demo.</p>
+          <p class="muted">Itu tidak membuat produknya otomatis sempurna. Tetapi setiap keputusan dimulai dari masalah yang benar-benar dialami.</p>
+          <a class="text-link" href="/belajar/kenapa-kami-pakai-produk-sendiri-sebelum-menjualnya">Baca studi kasus <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </section>
+
+      <section id="artikel" class="section">
+        <div class="section-head section-head-row">
+          <div><span class="section-number">06 · Belajar</span><h2>Catatan untuk membangun dengan kepala dingin.</h2></div>
+          <a class="text-link" href="/belajar">Lihat semua artikel <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="article-grid">
+          {ARTICLES.slice(0, 3).map((article) => (
+            <a class="article-card" href={`/belajar/${article.slug}`}>
+              <div class="article-meta"><span>{article.category}</span><time>{article.publishedAt}</time></div>
+              <h3>{article.title}</h3><p>{article.summary}</p>
+              <strong>Baca artikel <i class="fas fa-arrow-right"></i></strong>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section id="ikuti" class="section connect-section">
+        <span class="section-number">07 · Terhubung</span>
+        <h2>Ikuti prosesnya, bukan hanya hasil akhirnya.</h2>
+        <p>Kami membagikan catatan, pembelajaran, dan perkembangan produk secara jujur melalui Instagram.</p>
+        <div class="hero-cta">
+          <a class="btn btn-gold" href={PUBLIC_META.instagram} target="_blank" rel="noopener"><i class="fab fa-instagram"></i> Ikuti {PUBLIC_META.instagramHandle}</a>
+          <a class="btn btn-ghost" href={`mailto:${LEGAL.contactEmail}?subject=Berlangganan%20kabar%20SparkMind`}>Berlangganan via email</a>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </Layout>
+))
 
 // ════════════════════════════════════════════════════════════════
 // DOCTRINE viewer
