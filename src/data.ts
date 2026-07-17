@@ -68,19 +68,19 @@ export const BRANDS: Brand[] = [
   {
     key: 'clarity', name: 'Clarity Coach', subdomain: 'clarity.sparkmind.web.id',
     tagline: 'Pain-killer agent untuk clarity, recovery & personal growth.',
-    focus: 'Revenue Engine #1 · Productivity', pricing: 'Rp 99K – 700K',
+    focus: 'Revenue Engine #1 · Productivity', pricing: 'Rp 99K–700K',
     status: 'LIVE', icon: 'fa-compass', accent: '#10b981'
   },
   {
     key: 'kuratorkas', name: 'KuratorKas', subdomain: 'kuratorkas.sparkmind.web.id',
     tagline: 'AI Curator untuk UMKM Fashion Indonesia — 5 agen dalam 1.',
-    focus: 'Revenue Engine #2 · Fashion AI', pricing: 'Rp 50K – 299K',
+    focus: 'Revenue Engine #2 · Fashion AI', pricing: 'Rp 50K–299K',
     status: 'PARTIAL', icon: 'fa-shirt', accent: '#f59e0b'
   },
   {
     key: 'barberkas', name: 'BarberKas', subdomain: 'barberkas.sparkmind.web.id',
     tagline: 'Kasir + booking + AI Staff untuk barbershop — dibuat oleh capster, untuk capster.',
-    focus: 'Capster Commit · Owner Dogfood', pricing: 'Rp 49K – 499K/bln',
+    focus: 'Capster Commit · Owner Dogfood', pricing: 'Rp 49K–499K/bln',
     status: 'LIVE', icon: 'fa-scissors', accent: '#3b82f6'
   },
   {
@@ -352,7 +352,7 @@ export const ARTICLES: Article[] = [
       { heading: 'Apa artinya bagi pembeli', paragraphs: [
         'Dogfooding tidak otomatis membuat produk sempurna dan tidak boleh dipakai sebagai klaim berlebihan. Satu barbershop juga tidak mewakili seluruh pasar. Pengalaman internal harus dilanjutkan dengan percakapan dan pengujian bersama operator lain. Bedanya, pembicaraan dimulai dari sistem yang sudah menghadapi kondisi nyata, bukan dari ide kosong.',
         'Bagi bisnis kecil yang memilih software, tanyakan bagaimana produk itu diuji. Apakah tim pembuat memahami alur kerja Anda? Masalah apa yang sudah mereka temui? Perubahan apa yang dibuat setelah penggunaan nyata? Jawaban spesifik biasanya lebih bermakna daripada daftar fitur panjang.',
-        'Prinsip kami sederhana: sebelum meminta orang lain menaruh data, waktu, dan uang pada sebuah produk, kami harus bersedia menaruh pekerjaan kami sendiri di sana. BarberKas menjadi bukti awal prinsip tersebut. Bukan bukti bahwa semua pekerjaan selesai, melainkan bahwa proses belajar dimulai dari kenyataan.'
+        'Prinsip kami sederhana: sebelum meminta orang lain menaruh data, waktu, dan uang pada sebuah produk, kami harus bersedia menaruh pekerjaan kami sendiri di sana. BarberKas menjadi bukti awal prinsip tersebut. Bukan bukti bahwa semua pekerjaan selesai, melainkan bahwa proses belajar dimulai dari kenyataan. Catatan penggunaan kemudian menjadi bahan evaluasi berkala: apa yang benar-benar dipakai, bagian mana yang masih manual, dan keputusan apa yang perlu diuji bersama pengguna berikutnya. Dengan begitu, pengembangan tidak bergerak berdasarkan tebakan paling keras, tetapi berdasarkan pola masalah yang terus terlihat.'
       ]}
     ]
   },
@@ -378,7 +378,7 @@ export const ARTICLES: Article[] = [
       ]},
       { heading: '4. Regulation: hak pengguna harus bisa dijalankan', paragraphs: [
         'UU Pelindungan Data Pribadi memberi dasar penting tentang pemrosesan data. Bagi pengguna, hal paling praktis adalah memastikan tersedia kontak resmi dan prosedur untuk meminta akses, perbaikan, atau penghapusan data. Logo kepatuhan tidak cukup jika tidak ada proses yang bisa digunakan.',
-        'Sebelum membeli, buat inventaris sederhana: data pelanggan apa yang akan masuk, dampak jika bocor, dan siapa yang bertanggung jawab. Mulailah dengan data berisiko rendah, batasi akses, dan evaluasi hasilnya. AI seharusnya menambah kemampuan bisnis tanpa mengambil kendali bisnis. Itulah inti kedaulatan: bukan menolak teknologi asing atau baru, melainkan menggunakan teknologi dengan posisi tawar yang sadar.'
+        'Sebelum membeli, buat inventaris sederhana: data pelanggan apa yang akan masuk, dampak jika bocor, dan siapa yang bertanggung jawab. Mulailah dengan data berisiko rendah, batasi akses, dan evaluasi hasilnya. Simpan daftar layanan yang digunakan beserta pemilik aksesnya agar bisnis tidak kehilangan jejak ketika anggota tim berganti. Tinjau daftar itu secara berkala, terutama setelah perubahan fitur atau kebijakan penyedia. AI seharusnya menambah kemampuan bisnis tanpa mengambil kendali bisnis. Itulah inti kedaulatan: bukan menolak teknologi asing atau baru, melainkan menggunakan teknologi dengan posisi tawar yang sadar.'
       ]}
     ]
   },
@@ -403,7 +403,7 @@ export const ARTICLES: Article[] = [
       ]},
       { heading: 'Keputusan setelah percobaan', paragraphs: [
         'Pada akhir uji, pilih satu dari tiga keputusan: lanjut, ubah cara pakai, atau berhenti. Berhenti bukan kegagalan jika percobaan memberi bukti bahwa masalahnya tidak cukup penting. Yang merugikan adalah mempertahankan alat hanya karena sudah membayar.',
-        'Produk AI pertama yang baik bukan yang membuat bisnis terlihat paling modern. Ia menyelesaikan satu pekerjaan nyata, dipahami operatornya, dan menghasilkan perubahan yang dapat dilihat. Setelah satu alur stabil, barulah pertimbangkan alur berikutnya. Kemajuan sistematis hampir selalu lebih murah daripada menumpuk alat berdasarkan tren.'
+        'Produk AI pertama yang baik bukan yang membuat bisnis terlihat paling modern. Ia menyelesaikan satu pekerjaan nyata, dipahami operatornya, dan menghasilkan perubahan yang dapat dilihat. Dokumentasikan cara pakai yang berhasil agar hasilnya tidak bergantung pada satu orang. Setelah satu alur stabil, barulah pertimbangkan alur berikutnya. Kemajuan sistematis hampir selalu lebih murah daripada menumpuk alat berdasarkan tren.'
       ]}
     ]
   },
@@ -428,7 +428,7 @@ export const ARTICLES: Article[] = [
       ]},
       { heading: 'Mulai dari satu putaran kerja', paragraphs: [
         'Bisnis kecil tidak membutuhkan dokumen puluhan halaman untuk mulai. Pilih satu aktivitas penting, misalnya produksi artikel. Tuliskan siapa yang mengumpulkan pertanyaan pelanggan, bagaimana memilih topik, standar kualitas, tempat menyimpan draft, jadwal terbit, dan metrik yang ditinjau. Jalankan empat minggu, lalu catat bagian yang macet.',
-        'Template terbaik kemudian lahir dari sistem tersebut. Ia menjadi alat bantu yang mencerminkan proses nyata, bukan paket asing yang memaksa bisnis menyesuaikan diri. Inilah perbedaan mendasar: template membantu melakukan satu tugas; sistem membantu organisasi belajar. Brand yang bertahan bukan brand yang tidak pernah berubah, melainkan brand yang tahu bagian mana yang harus tetap dan bagian mana yang perlu diperbarui.'
+        'Template terbaik kemudian lahir dari sistem tersebut. Ia menjadi alat bantu yang mencerminkan proses nyata, bukan paket asing yang memaksa bisnis menyesuaikan diri. Catatan perubahan juga penting: tim perlu tahu alasan sebuah aturan dibuat dan bukti yang membuatnya diubah. Inilah perbedaan mendasar: template membantu melakukan satu tugas; sistem membantu organisasi belajar. Brand yang bertahan bukan brand yang tidak pernah berubah, melainkan brand yang tahu bagian mana yang harus tetap dan bagian mana yang perlu diperbarui.'
       ]}
     ]
   },

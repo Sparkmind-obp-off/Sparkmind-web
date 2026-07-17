@@ -407,6 +407,10 @@ main { width: 100%; }
 .entity-strip { padding: 32px; border: 1px solid var(--line-gold); background: rgba(212,175,55,.05); margin-top: 60px; display: flex; justify-content: space-between; align-items: center; gap: 30px; }
 .entity-strip p { color: var(--muted); font-size: .87rem; margin-top: 7px; }
 
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.inline-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.contact-title { font: 600 clamp(1.8rem, 3.5vw, 2.7rem) 'Playfair Display', serif; }
+.product-card footer span { color: var(--muted); font-size: .72rem; }
 .contact-layout { display: grid; grid-template-columns: .75fr 1.25fr; gap: clamp(45px, 8vw, 110px); }
 .contact-options { display: grid; gap: 14px; margin-top: 38px; }
 .contact-option { padding: 18px 0; border-bottom: 1px solid var(--border); }

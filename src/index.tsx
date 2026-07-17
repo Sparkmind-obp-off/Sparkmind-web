@@ -201,6 +201,169 @@ app.get('/', (c) => c.html(
 ))
 
 // ════════════════════════════════════════════════════════════════
+// PUBLIC PAGES
+// ════════════════════════════════════════════════════════════════
+app.get('/produk', (c) => c.html(
+  <Layout title="Produk SparkMind — AI Siap Pakai untuk Bisnis Kecil" description="Lima produk AI SparkMind untuk operator UMKM Indonesia, dari barbershop dan fashion hingga komunitas lokal.">
+    <Nav active="products" />
+    <main class="public-page">
+      <header class="public-page-head">
+        <div><span class="section-number">Produk</span><h1>Alat yang lahir dari pekerjaan nyata.</h1></div>
+        <p>Setiap produk punya pekerjaan yang jelas, harga yang terbuka, dan situsnya sendiri. Pilih berdasarkan masalah yang ingin diselesaikan—bukan berdasarkan tren AI terbaru.</p>
+      </header>
+      <section aria-labelledby="product-list-title">
+        <h2 id="product-list-title" class="sr-only">Daftar produk SparkMind</h2>
+        <div class="product-grid">
+          {PUBLIC_PRODUCTS.map((product) => (
+            <a class="product-card" style={`--accent:${product.accent}`} href={`https://${product.subdomain}`} target="_blank" rel="noopener">
+              <div class="product-icon"><i class={`fas ${product.icon}`}></i></div>
+              <span class="product-type">Produk SparkMind</span>
+              <h3>{product.name}</h3>
+              <p>{product.tagline}</p>
+              <footer><strong>{product.pricing}</strong><span>Kunjungi situs <i class="fas fa-arrow-up-right-from-square"></i></span></footer>
+            </a>
+          ))}
+        </div>
+      </section>
+      <section class="entity-strip product-note">
+        <div><strong>Belum tahu harus memilih yang mana?</strong><p>Ceritakan alur kerja yang ingin Anda rapikan. Kami akan menjawab dengan jujur, termasuk jika produk kami belum tepat.</p></div>
+        <a class="btn btn-ghost" href="/kontak">Bicarakan kebutuhan</a>
+      </section>
+    </main>
+    <Footer />
+  </Layout>
+))
+
+app.get('/belajar', (c) => c.html(
+  <Layout title="Belajar — Perpustakaan SparkMind" description="Framework, studi kasus, dan cara berpikir untuk membangun brand serta bisnis digital secara sistematis.">
+    <Nav active="learn" />
+    <main class="public-page">
+      <header class="public-page-head">
+        <div><span class="section-number">Learn Hub</span><h1>Perpustakaan untuk membangun dengan sadar.</h1></div>
+        <p>Bukan kumpulan trik viral. Di sini kami membedah cara berpikir, sistem, dan pengalaman operasional yang membantu bisnis kecil membuat keputusan lebih baik.</p>
+      </header>
+      <nav class="filter-bar" aria-label="Filter kategori artikel">
+        {['Semua', 'Branding', 'AI & Automation', 'Content & Growth', 'Studi Kasus'].map((category, index) => (
+          <button type="button" class={`filter-button ${index === 0 ? 'active' : ''}`} data-category={category}>{category}</button>
+        ))}
+      </nav>
+      <section class="article-list" aria-label="Daftar artikel">
+        {ARTICLES.map((article) => (
+          <a class="article-row" href={`/belajar/${article.slug}`} data-article-category={article.category}>
+            <div class="article-row-meta"><span>{article.category}</span><time>{article.publishedAt}</time><small>{article.readTime}</small></div>
+            <div><h2>{article.title}</h2><p>{article.summary}</p></div>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        ))}
+      </section>
+    </main>
+    <Footer />
+  </Layout>
+))
+
+app.get('/belajar/:slug', (c) => {
+  const article = findArticle(c.req.param('slug'))
+  if (!article) return c.notFound()
+  return c.html(
+    <Layout title={`${article.title} — SparkMind`} description={article.summary}>
+      <Nav active="learn" />
+      <main class="public-page article-detail">
+        <a class="article-back" href="/belajar"><i class="fas fa-arrow-left"></i> Kembali ke Learn Hub</a>
+        <article>
+          <header class="article-header">
+            <span class="section-number">{article.category}</span>
+            <h1>{article.title}</h1>
+            <div class="article-meta"><time>{article.publishedAt}</time><span>{article.readTime} baca</span></div>
+          </header>
+          <div class="article-body">
+            {article.content.map((section) => (
+              <section>
+                {section.heading ? <h2>{section.heading}</h2> : null}
+                {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+              </section>
+            ))}
+          </div>
+        </article>
+        <section class="entity-strip">
+          <div><strong>Lanjutkan cara berpikirnya.</strong><p>Temukan produk untuk praktik langsung atau baca catatan lain di perpustakaan.</p></div>
+          <div class="inline-actions"><a class="btn btn-ghost" href="/produk">Lihat Produk</a><a class="btn btn-gold" href="/belajar">Artikel Lain</a></div>
+        </section>
+      </main>
+      <Footer />
+    </Layout>
+  )
+})
+
+app.get('/tentang', (c) => c.html(
+  <Layout title="Tentang SparkMind — Fondasi Digital untuk Bisnis Indonesia" description="Cerita, nilai, dan badan hukum di balik SparkMind.">
+    <Nav active="about" />
+    <main class="public-page">
+      <header class="public-page-head">
+        <div><span class="section-number">Tentang Kami</span><h1>Teknologi boleh berubah. Fondasi tidak boleh rapuh.</h1></div>
+        <p>SparkMind ada agar lebih banyak UMKM dan pelaku bisnis kecil memahami cara membangun brand digital yang benar—bukan sekadar rajin posting.</p>
+      </header>
+      <section class="story-layout">
+        <div><span class="section-number">Kenapa kami ada</span><h2>Dari alat yang dipakai sendiri, menuju sistem yang bisa dipelajari bersama.</h2></div>
+        <div class="story-copy">
+          <p>Bisnis kecil sering diberi dua pilihan yang sama-sama melelahkan: mengikuti setiap tren digital, atau tertinggal. Kami percaya ada jalan yang lebih masuk akal. Mulai dari masalah nyata, bangun sistem yang dapat diulang, lalu gunakan teknologi untuk memperkuatnya.</p>
+          <p>Karena itu SparkMind bekerja dalam dua lapis. Kami membuat produk AI siap pakai untuk operator UMKM, sekaligus membagikan framework dan studi kasus bagi orang yang ingin membangun brand serta bisnis digitalnya sendiri.</p>
+          <p>Kami masih berada dalam proses membangun. Kami tidak mengklaim telah melayani angka yang belum dapat dibuktikan. Ukuran kami adalah kegunaan: apakah produk dipakai, apakah sistem mempermudah keputusan, dan apakah pembelajaran dapat diterapkan di dunia nyata.</p>
+        </div>
+      </section>
+      <section aria-labelledby="values-title">
+        <div class="section-head"><span class="section-number">Nilai brand</span><h2 id="values-title">Empat pegangan dalam setiap keputusan.</h2></div>
+        <div class="values-grid">
+          {[
+            ['01', 'Kedaulatan', 'Bisnis harus tetap punya kendali atas data, kanal, dan keputusan pentingnya sendiri.'],
+            ['02', 'Kejelasan', 'Kami memilih penjelasan yang dapat dipahami daripada istilah yang terdengar canggih.'],
+            ['03', 'Bukti nyata', 'Klaim harus bertumpu pada penggunaan, hasil, atau proses yang memang dapat ditunjukkan.'],
+            ['04', 'Sistematis', 'Pekerjaan yang baik perlu bisa diulang, diukur, dan diperbaiki—bukan bergantung pada momentum.']
+          ].map((value) => (
+            <article class="value-card"><span>{value[0]}</span><h2>{value[1]}</h2><p>{value[2]}</p></article>
+          ))}
+        </div>
+      </section>
+      <section class="entity-strip">
+        <div><strong>{LEGAL.companyName}</strong><p>SparkMind dioperasikan oleh badan hukum Indonesia. Founder: {LEGAL.ownerFullName}, {LEGAL.ownerRole}.</p></div>
+        <a class="btn btn-ghost" href="/legal/ownership">Lihat pernyataan kepemilikan</a>
+      </section>
+    </main>
+    <Footer />
+  </Layout>
+))
+
+app.get('/kontak', (c) => c.html(
+  <Layout title="Kontak SparkMind" description="Hubungi SparkMind untuk pertanyaan produk, kolaborasi, atau percakapan tentang kebutuhan digital bisnis Anda.">
+    <Nav active="contact" />
+    <main class="public-page">
+      <header class="public-page-head">
+        <div><span class="section-number">Kontak</span><h1>Mari mulai dari masalah yang nyata.</h1></div>
+        <p>Ceritakan konteks bisnis dan bagian yang ingin Anda rapikan. Tidak perlu menulis brief yang sempurna—kami akan membantu memperjelasnya.</p>
+      </header>
+      <section class="contact-layout">
+        <div>
+          <span class="section-number">Hubungi langsung</span>
+          <h2 class="contact-title">Pilih kanal yang paling nyaman.</h2>
+          <div class="contact-options">
+            <div class="contact-option"><span>Email resmi</span><a href={`mailto:${LEGAL.contactEmail}`}>{LEGAL.contactEmail}</a></div>
+            <div class="contact-option"><span>Instagram</span><a href={PUBLIC_META.instagram} target="_blank" rel="noopener">{PUBLIC_META.instagramHandle}</a></div>
+            <div class="contact-option"><span>Domisili</span><p>{LEGAL.domicile}</p></div>
+          </div>
+        </div>
+        <form id="contact-form" class="contact-form" data-recipient={LEGAL.contactEmail}>
+          <div class="form-field"><label for="contact-name">Nama</label><input id="contact-name" name="name" type="text" autocomplete="name" required /></div>
+          <div class="form-field"><label for="contact-email">Email</label><input id="contact-email" name="email" type="email" autocomplete="email" required /></div>
+          <div class="form-field"><label for="contact-message">Pesan</label><textarea id="contact-message" name="message" required placeholder="Ceritakan bisnis, masalah, dan hasil yang Anda harapkan."></textarea></div>
+          <button class="btn btn-gold" type="submit">Siapkan email <i class="fas fa-arrow-right"></i></button>
+          <p class="form-note">Form ini akan membuka aplikasi email Anda. Data tidak disimpan di server SparkMind.</p>
+        </form>
+      </section>
+    </main>
+    <Footer />
+  </Layout>
+))
+
+// ════════════════════════════════════════════════════════════════
 // DOCTRINE viewer
 // ════════════════════════════════════════════════════════════════
 app.get('/internal/doctrine', (c) => {
