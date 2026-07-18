@@ -26,6 +26,7 @@ Detail kepemilikan dan dokumen layanan tersedia melalui `/legal` dan `/legal/own
 - Halaman operasional lama dipertahankan di `/internal/*`, tidak ditautkan dari UI publik, dan menggunakan meta `noindex, nofollow`.
 - Seluruh route dan isi Legal dipertahankan.
 - API publik lama dipertahankan.
+- AI Gateway v0.1 internal dengan adapter Gemini berbasis `fetch()` native, validasi input, dan error handling terstruktur.
 - Handler 404 berstatus HTTP 404 dan tidak terindeks.
 
 ## Entry URI
@@ -63,22 +64,26 @@ Detail kepemilikan dan dokumen layanan tersedia melalui `/legal` dan `/legal/own
 
 Route internal masih dapat dibuka langsung untuk menjaga data lama, tetapi tidak muncul di navigasi/footer publik dan ditandai `noindex, nofollow`.
 
-### API Publik
+### API
 
-| Path | Keterangan |
+| Method & Path | Keterangan |
 |---|---|
-| `/api/health` | Status kesehatan aplikasi |
-| `/api/state` | State publik lama yang dipertahankan |
-| `/api/brands` | Seluruh data sub-brand |
-| `/api/legal` | Identitas badan hukum |
-| `/api/barberkas` | Data SSOT BarberKas |
-| `/api/sprint` | Data sprint lama |
-| `/api/revenue` | Data revenue lama |
+| `POST /api/ai/generate` | Gateway AI internal. Body JSON: `{ "prompt": "..." }`; membutuhkan binding `GEMINI_API_KEY` |
+| `GET /api/health` | Status kesehatan aplikasi |
+| `GET /api/state` | State publik lama yang dipertahankan |
+| `GET /api/brands` | Seluruh data sub-brand |
+| `GET /api/legal` | Identitas badan hukum |
+| `GET /api/barberkas` | Data SSOT BarberKas |
+| `GET /api/sprint` | Data sprint lama |
+| `GET /api/revenue` | Data revenue lama |
 
 ## Data Architecture
 
 - `src/data.ts` adalah SSOT untuk identitas publik, produk, artikel, legal, brand, serta data operasional lama.
-- `src/index.tsx` berisi route SSR Hono dan komposisi halaman.
+- `src/index.tsx` berisi route SSR Hono, komposisi halaman, dan route masuk AI Gateway.
+- `src/ai/gateway/` memvalidasi permintaan, memilih provider, dan mengekspor `runGateway()`.
+- `src/ai/providers/gemini.ts` memanggil Gemini dengan `fetch()` native; API key hanya dibaca dari binding Cloudflare.
+- `src/ai/types.ts` mendefinisikan kontrak request, response, provider, dan error terstruktur.
 - `src/legal.tsx` berisi dokumen legal resmi dan tidak ditulis ulang dalam rebuild ini.
 - `src/components.tsx` menyediakan navigasi dan footer bersama.
 - `src/renderer.tsx` menyediakan layout HTML, metadata deskripsi, dan dukungan `noindex`.
@@ -104,6 +109,22 @@ curl http://localhost:3000/api/health
 
 Aplikasi berjalan pada port `3000` melalui `wrangler pages dev dist`.
 
+Untuk menguji gateway secara lokal, buat `.dev.vars` (file ini diabaikan Git) dan isi:
+
+```dotenv
+GEMINI_API_KEY=your_api_key
+```
+
+Contoh request:
+
+```bash
+curl -X POST http://localhost:3000/api/ai/generate \
+  -H 'Content-Type: application/json' \
+  -d '{"prompt":"Jelaskan kedaulatan data untuk UMKM."}'
+```
+
+Tanpa secret tersebut, endpoint merespons HTTP `503` dengan JSON yang aman dan terstruktur, bukan crash kosong. Untuk production, set `GEMINI_API_KEY` sebagai Cloudflare Pages secret—jangan simpan secret di source atau commit Git.
+
 ## Tech Stack
 
 - Hono JSX SSR dan TypeScript
@@ -117,6 +138,7 @@ Aplikasi berjalan pada port `3000` melalui `wrangler pages dev dist`.
 - Backend newsletter dengan double opt-in.
 - Penyimpanan formulir kontak menggunakan D1 atau KV.
 - Publikasi Event Tracker PWT; produk ini tetap internal sampai siap untuk pelanggan luar.
+- Billing, usage metering, caching, observability, multi-provider fallback, SDK publik, marketplace, dan plugin system untuk AI Gateway.
 - Deployment rebuild ke production; menunggu persetujuan eksplisit pemilik.
 
 ## Langkah Berikutnya
@@ -129,7 +151,7 @@ Aplikasi berjalan pada port `3000` melalui `wrangler pages dev dist`.
 ## Status Deployment
 
 - **Platform target:** Cloudflare Pages
-- **Branch:** `main`
+- **Branch pengembangan saat ini:** `feat/ai-gateway-v0.1` (target PR: `main`)
 - **Preview sandbox:** aktif untuk sesi pengembangan
 - **Production rebuild:** belum dideploy; production yang ada tidak diubah dalam sesi ini
-- **Terakhir diperbarui:** 17 Juli 2026
+- **Terakhir diperbarui:** 18 Juli 2026
