@@ -10,7 +10,7 @@ import {
   authenticateOwner, clearOwnerSession, hasValidOwnerSession, LoginPanel,
   requireOwner, safeDashboardPath, type OwnerBindings
 } from './auth'
-import { AIHubPage, DashboardHome } from './dashboard'
+import { AIHubPage, ComingSoonPage, DashboardHome } from './dashboard'
 import {
   META, PILLARS, BRANDS, SPRINT, REVENUE, D90_MIX, TARGETS,
   DECISIONS, GAPS, GAP_STATS, MARKET, LEGAL, BARBERKAS, PUBLIC_META,
@@ -96,6 +96,42 @@ app.get('/dashboard/ai-hub', (c) => {
   return c.html(
     <Layout title="AI Hub — Dashboard SparkMind" description="Gunakan AI Gateway SparkMind dari ruang kerja pemilik." noIndex>
       <AIHubPage gatewayConfigured={gatewayConfigured} />
+    </Layout>
+  )
+})
+
+app.get('/dashboard/content', (c) => {
+  c.header('Cache-Control', 'no-store')
+  return c.html(
+    <Layout title="Content — Dashboard SparkMind" noIndex>
+      <ComingSoonPage section="content" title="Content" icon="📝" description="Ruang untuk merencanakan dan mengelola konten SparkMind belum dibangun." />
+    </Layout>
+  )
+})
+
+app.get('/dashboard/assets', (c) => {
+  c.header('Cache-Control', 'no-store')
+  return c.html(
+    <Layout title="Assets — Dashboard SparkMind" noIndex>
+      <ComingSoonPage section="assets" title="Assets" icon="📁" description="Pustaka aset dan alur pengelolaan berkas belum dibangun." />
+    </Layout>
+  )
+})
+
+app.get('/dashboard/brands', (c) => {
+  c.header('Cache-Control', 'no-store')
+  return c.html(
+    <Layout title="Brands — Dashboard SparkMind" noIndex>
+      <ComingSoonPage section="brands" title="Brands" icon="🏢" description="Workspace Brand OS dan Brand Discovery belum dibangun pada milestone ini." />
+    </Layout>
+  )
+})
+
+app.get('/dashboard/settings', (c) => {
+  c.header('Cache-Control', 'no-store')
+  return c.html(
+    <Layout title="Settings — Dashboard SparkMind" noIndex>
+      <ComingSoonPage section="settings" title="Settings" icon="⚙️" description="Pengaturan dashboard belum tersedia. Secret tetap dikelola melalui Cloudflare, bukan dari halaman ini." />
     </Layout>
   )
 })

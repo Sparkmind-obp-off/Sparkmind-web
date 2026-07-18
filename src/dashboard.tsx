@@ -118,3 +118,21 @@ export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
     </section>
   </DashboardShell>
 )
+
+export const ComingSoonPage = (props: {
+  section: 'content' | 'assets' | 'brands' | 'settings'
+  title: string
+  description: string
+  icon: string
+}) => (
+  <DashboardShell active={props.section} title={props.title} eyebrow="Rencana produk">
+    <section class="coming-soon-panel" aria-labelledby="coming-soon-title">
+      <span class="coming-soon-icon" aria-hidden="true">{props.icon}</span>
+      <span class="panel-label">Status saat ini</span>
+      <h2 id="coming-soon-title">Segera hadir — belum dibangun.</h2>
+      <p>{props.description}</p>
+      <p class="muted">Halaman ini sengaja belum menampilkan kontrol atau data palsu. Fungsinya akan dibangun pada sprint terpisah setelah ruang lingkupnya dikunci.</p>
+      <a class="btn btn-ghost" href="/dashboard">Kembali ke Dashboard</a>
+    </section>
+  </DashboardShell>
+)

@@ -568,3 +568,11 @@ main { width: 100%; }
   .ai-composer-head, .ai-result-head, .ai-composer-actions { align-items: flex-start; flex-direction: column; }
   .ai-composer-actions .btn { width: 100%; justify-content: center; }
 }
+
+/* ── Honest dashboard placeholders ──────────────────────────── */
+.coming-soon-panel { max-width: 720px; padding: clamp(30px, 6vw, 58px); border: 1px solid var(--border); background: var(--surface); }
+.coming-soon-icon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 44px; border: 1px solid var(--line-gold); background: rgba(212,175,55,.06); font-size: 1.55rem; }
+.coming-soon-panel h2 { margin: 9px 0 18px; font: 600 clamp(1.9rem, 4vw, 3.1rem)/1.08 'Playfair Display', serif; letter-spacing: -.03em; }
+.coming-soon-panel > p { max-width: 600px; margin-bottom: 14px; }
+.coming-soon-panel > .muted { font-size: .86rem; }
+.coming-soon-panel .btn { margin-top: 22px; }
