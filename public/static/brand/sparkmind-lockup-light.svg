@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 240" role="img" aria-labelledby="title desc">
+  <title id="title">SparkMind horizontal logo</title>
+  <desc id="desc">Official SparkMind symbol and wordmark for light backgrounds.</desc>
+  <g transform="translate(0 -8)">
+    <path fill="#A77E12" d="M38 48h82l43 43-25 25-31-31H78l28 28-25 25-43-43 25-25h76l-22-22H38z"/>
+    <path fill="#17181B" d="M218 208h-82l-43-43 25-25 31 31h29l-28-28 25-25 43 43-25 25h-76l22 22h79z"/>
+    <path fill="#F4EFE4" d="m128 116 12 12-12 12-12-12z"/>
+  </g>
+  <text x="278" y="150" fill="#17181B" font-family="Inter, Arial, sans-serif" font-size="104" font-weight="650" letter-spacing="-5">Spark<tspan fill="#A77E12">Mind</tspan></text>
+</svg>

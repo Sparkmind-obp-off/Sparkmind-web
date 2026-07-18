@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">SparkMind monochrome symbol</title>
+  <desc id="desc">Single-color SparkMind symbol.</desc>
+  <path fill="currentColor" d="M38 48h82l43 43-25 25-31-31H78l28 28-25 25-43-43 25-25h76l-22-22H38zm180 160h-82l-43-43 25-25 31 31h29l-28-28 25-25 43 43-25 25h-76l22 22h79z"/>
+</svg>

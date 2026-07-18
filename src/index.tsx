@@ -21,8 +21,8 @@ const app = new Hono<{ Bindings: Bindings }>()
 app.use('/api/*', cors())
 app.use('/static/*', serveStatic({ root: './public' }))
 
-// Inline SVG favicon (avoids 500 from serveStatic on missing /favicon.ico)
-const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#0a0a0a"/><text x="32" y="44" font-size="38" text-anchor="middle" fill="#d4af37" font-family="serif" font-weight="700">S</text></svg>`
+// Inline official SparkMind symbol for favicon responses.
+const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#090A0B"/><path fill="#D4AF37" d="M38 48h82l43 43-25 25-31-31H78l28 28-25 25-43-43 25-25h76l-22-22H38z"/><path fill="#F4EFE4" d="M218 208h-82l-43-43 25-25 31 31h29l-28-28 25-25 43 43-25 25h-76l22 22h79z"/><path fill="#090A0B" d="m128 116 12 12-12 12-12-12z"/></svg>`
 const notFoundResponse = () => new Response(
   `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>404 — SparkMind</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"><link href="/static/style.css" rel="stylesheet"></head><body><main class="page center-page"><span class="section-number">Halaman tidak ditemukan</span><h1 class="display">404</h1><p class="muted">Alamat ini tidak tersedia. Kembali ke <a class="text-link" href="/">beranda SparkMind</a>.</p></main></body></html>`,
   { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }

@@ -23,6 +23,7 @@ Detail kepemilikan dan dokumen layanan tersedia melalui `/legal` dan `/legal/own
 - Halaman Tentang Kami dengan cerita brand, empat nilai, dan rujukan ke SSOT legal.
 - Halaman Kontak dengan form progresif berbasis `mailto`, email resmi, dan Instagram.
 - Navigasi publik responsif dan footer dengan identitas badan hukum serta seluruh link legal.
+- Sistem logo resmi SparkMind: simbol vektor, avatar sosial, lockup gelap/terang, monokrom, favicon, dan ekspor PNG multiukuran di `public/static/brand/`.
 - Halaman operasional lama dipertahankan di `/internal/*`, tidak ditautkan dari UI publik, dan menggunakan meta `noindex, nofollow`.
 - Seluruh route dan isi Legal dipertahankan.
 - API publik lama dipertahankan.
@@ -89,6 +90,7 @@ Route internal masih dapat dibuka langsung untuk menjaga data lama, tetapi tidak
 - `src/renderer.tsx` menyediakan layout HTML, metadata deskripsi, dan dukungan `noindex`.
 - `public/static/style.css` berisi sistem visual gelap–emas yang responsif.
 - `public/static/app.js` menyediakan menu mobile, filter artikel, smooth scroll, dan form kontak `mailto`.
+- `public/static/brand/` menyimpan aset identitas resmi; simbol interlocking merepresentasikan ide yang ditransformasikan menjadi sistem dengan palet near-black, heritage gold, dan warm ivory.
 - Tidak ada storage runtime. Konten dirender dari source dan form kontak tidak menyimpan data.
 
 ## Panduan Pengguna
@@ -152,7 +154,7 @@ Tanpa secret tersebut, endpoint merespons HTTP `503` dengan JSON yang aman dan t
 
 - **Platform target:** Cloudflare Pages
 - **Project target:** `sparkmind-web` (terpisah dari project lama `sparkmind-foundry`)
-- **Branch pengembangan saat ini:** `feat/ai-gateway-v0.1` (target PR: `main`)
+- **Branch pengembangan saat ini:** `main`
 - **Preview sandbox:** aktif untuk sesi pengembangan
 - **Production rebuild:** belum dideploy; production yang ada tidak diubah dalam sesi ini
 - **Terakhir diperbarui:** 18 Juli 2026
