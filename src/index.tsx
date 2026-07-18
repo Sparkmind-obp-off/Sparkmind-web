@@ -29,6 +29,7 @@ app.use('/api/*', cors())
 app.use('/static/*', serveStatic({ root: './public' }))
 app.use('/dashboard', requireOwner())
 app.use('/dashboard/*', requireOwner())
+app.use('/api/ai/*', requireOwner())
 
 // Inline official SparkMind symbol for favicon responses.
 const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#090A0B"/><path fill="#D4AF37" d="M38 48h82l43 43-25 25-31-31H78l28 28-25 25-43-43 25-25h76l-22-22H38z"/><path fill="#F4EFE4" d="M218 208h-82l-43-43 25-25 31 31h29l-28-28 25-25 43 43-25 25h-76l22 22h79z"/><path fill="#090A0B" d="m128 116 12 12-12 12-12-12z"/></svg>`
