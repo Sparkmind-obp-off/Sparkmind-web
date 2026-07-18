@@ -11,6 +11,11 @@ type GeminiResponse = {
   }>
 }
 
+export type GeminiChatMessage = {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 const extractText = (payload: GeminiResponse): string => {
   return payload.candidates
     ?.flatMap((candidate) => candidate.content?.parts ?? [])
@@ -19,57 +24,79 @@ const extractText = (payload: GeminiResponse): string => {
     .trim() ?? ''
 }
 
+const requireCredential = (apiKey: string | undefined): string => {
+  const credential = apiKey?.trim()
+  if (!credential) throw new GatewayError('Layanan AI belum dikonfigurasi.', 503)
+  return credential
+}
+
+const requestGeminiText = async (
+  credential: string,
+  contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }>
+): Promise<string> => {
+  let response: Response
+
+  try {
+    response = await fetch(
+      `${GEMINI_API_BASE}/${GEMINI_MODEL}:generateContent`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': credential
+        },
+        body: JSON.stringify({
+          contents,
+          generationConfig: { responseMimeType: 'text/plain' }
+        })
+      }
+    )
+  } catch {
+    throw new GatewayError('Layanan AI sedang tidak dapat dihubungi.', 503)
+  }
+
+  if (!response.ok) {
+    if (response.status === 429 || response.status >= 500) {
+      throw new GatewayError('Layanan AI sedang sibuk. Silakan coba lagi.', 503)
+    }
+
+    throw new GatewayError('Permintaan tidak dapat diproses oleh layanan AI.', 502)
+  }
+
+  let payload: GeminiResponse
+
+  try {
+    payload = await response.json<GeminiResponse>()
+  } catch {
+    throw new GatewayError('Layanan AI mengembalikan respons yang tidak valid.', 502)
+  }
+
+  const result = extractText(payload)
+  if (!result) throw new GatewayError('Layanan AI tidak menghasilkan jawaban.', 502)
+  return result
+}
+
+export const chatWithGemini = async (
+  apiKey: string | undefined,
+  messages: GeminiChatMessage[]
+): Promise<string> => {
+  const credential = requireCredential(apiKey)
+  return requestGeminiText(
+    credential,
+    messages.map((message) => ({
+      role: message.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: message.content }]
+    }))
+  )
+}
+
 export const createGeminiProvider = (apiKey: string | undefined): Provider => ({
   name: 'gemini',
 
   async generate(request: GatewayRequest): Promise<string> {
-    const credential = apiKey?.trim()
-    if (!credential) {
-      throw new GatewayError('Layanan AI belum dikonfigurasi.', 503)
-    }
-
-    let response: Response
-
-    try {
-      response = await fetch(
-        `${GEMINI_API_BASE}/${GEMINI_MODEL}:generateContent`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': credential
-          },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: request.prompt }] }],
-            generationConfig: { responseMimeType: 'text/plain' }
-          })
-        }
-      )
-    } catch {
-      throw new GatewayError('Layanan AI sedang tidak dapat dihubungi.', 503)
-    }
-
-    if (!response.ok) {
-      if (response.status === 429 || response.status >= 500) {
-        throw new GatewayError('Layanan AI sedang sibuk. Silakan coba lagi.', 503)
-      }
-
-      throw new GatewayError('Permintaan tidak dapat diproses oleh layanan AI.', 502)
-    }
-
-    let payload: GeminiResponse
-
-    try {
-      payload = await response.json<GeminiResponse>()
-    } catch {
-      throw new GatewayError('Layanan AI mengembalikan respons yang tidak valid.', 502)
-    }
-
-    const result = extractText(payload)
-    if (!result) {
-      throw new GatewayError('Layanan AI tidak menghasilkan jawaban.', 502)
-    }
-
-    return result
+    const credential = requireCredential(apiKey)
+    return requestGeminiText(credential, [
+      { role: 'user', parts: [{ text: request.prompt }] }
+    ])
   }
 })

@@ -98,10 +98,10 @@ export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
       </header>
 
       <nav class="ai-mode-tabs" role="tablist" aria-label="Mode AI Hub">
-        <button id="ai-tab-text" class="ai-mode-tab active" type="button" role="tab" aria-selected="true" aria-controls="ai-panel-text">
+        <button id="ai-tab-text" class="ai-mode-tab active" type="button" role="tab" aria-selected="true" aria-controls="ai-panel-text" data-ai-mode="text">
           <i class="fas fa-pen-nib" aria-hidden="true"></i><span>Generate Text</span>
         </button>
-        <button class="ai-mode-tab" type="button" role="tab" aria-selected="false" disabled title="Ditambahkan pada bagian Chat">
+        <button id="ai-tab-chat" class="ai-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="ai-panel-chat" data-ai-mode="chat" tabindex="-1">
           <i class="fas fa-comments" aria-hidden="true"></i><span>Chat</span>
         </button>
         <button class="ai-mode-tab" type="button" role="tab" aria-selected="false" disabled title="Ditambahkan pada bagian Generate Image">
@@ -138,6 +138,34 @@ export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
             <pre id="ai-result" class="ai-result">Masukkan prompt yang jelas, lalu pilih Generate.</pre>
           </section>
         </div>
+      </section>
+
+      <section id="ai-panel-chat" class="ai-mode-panel" role="tabpanel" aria-labelledby="ai-tab-chat" hidden>
+        <section class="ai-chat" aria-labelledby="ai-chat-title">
+          <header class="ai-chat-head">
+            <div>
+              <span class="panel-label">Chat stateless</span>
+              <h2 id="ai-chat-title">Percakapan langsung dengan Gemini.</h2>
+              <p>Riwayat hanya berada di tab browser ini dan dikirim ulang bersama pesan berikutnya. Server tidak menyimpannya.</p>
+            </div>
+            <button id="ai-chat-clear" class="btn btn-ghost ai-chat-clear" type="button" disabled>Hapus chat</button>
+          </header>
+          <section id="ai-chat-messages" class="ai-chat-messages" aria-live="polite" aria-label="Riwayat percakapan">
+            <div id="ai-chat-empty" class="ai-chat-empty">
+              <i class="fas fa-comments" aria-hidden="true"></i>
+              <p>Mulai percakapan dengan konteks yang cukup jelas.</p>
+            </div>
+          </section>
+          <form id="ai-chat-form" class="ai-chat-form">
+            <label class="sr-only" for="ai-chat-input">Pesan untuk AI</label>
+            <textarea id="ai-chat-input" name="message" required maxlength="20000" rows="3" placeholder="Tulis pesan Anda…"></textarea>
+            <button id="ai-chat-send" class="btn btn-gold" type="submit">
+              <span>Kirim</span><i class="fas fa-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+          <p id="ai-chat-status" class="ai-chat-status" role="status">Maksimum 50 pesan atau 100.000 karakter per permintaan.</p>
+          {!props.gatewayConfigured ? <p class="ai-config-notice" role="status">Layanan AI belum dikonfigurasi. Permintaan akan menampilkan error 503 yang aman sampai <code>GEMINI_API_KEY</code> tersedia.</p> : null}
+        </section>
       </section>
     </section>
   </DashboardShell>
