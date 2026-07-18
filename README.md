@@ -82,7 +82,7 @@ Route internal masih dapat dibuka langsung untuk menjaga data lama, tetapi tidak
 - `src/data.ts` adalah SSOT untuk identitas publik, produk, artikel, legal, brand, serta data operasional lama.
 - `src/index.tsx` berisi route SSR Hono, komposisi halaman, dan route masuk AI Gateway.
 - `src/ai/gateway/` memvalidasi permintaan, memilih provider, dan mengekspor `runGateway()`.
-- `src/ai/providers/gemini.ts` memanggil Gemini dengan `fetch()` native; API key hanya dibaca dari binding Cloudflare.
+- `src/ai/providers/gemini.ts` memanggil Gemini dengan `fetch()` native; API key hanya dibaca dari binding Cloudflare dan dikirim melalui header `x-goog-api-key`, bukan URL.
 - `src/ai/types.ts` mendefinisikan kontrak request, response, provider, dan error terstruktur.
 - `src/legal.tsx` berisi dokumen legal resmi dan tidak ditulis ulang dalam rebuild ini.
 - `src/components.tsx` menyediakan navigasi dan footer bersama.
@@ -151,6 +151,7 @@ Tanpa secret tersebut, endpoint merespons HTTP `503` dengan JSON yang aman dan t
 ## Status Deployment
 
 - **Platform target:** Cloudflare Pages
+- **Project target:** `sparkmind-web` (terpisah dari project lama `sparkmind-foundry`)
 - **Branch pengembangan saat ini:** `feat/ai-gateway-v0.1` (target PR: `main`)
 - **Preview sandbox:** aktif untuk sesi pengembangan
 - **Production rebuild:** belum dideploy; production yang ada tidak diubah dalam sesi ini

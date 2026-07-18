@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'sparkmind-foundry',
+      name: 'sparkmind-web',
       script: 'npx',
       args: 'wrangler pages dev dist --ip 0.0.0.0 --port 3000',
       cwd: '/home/user/webapp',
