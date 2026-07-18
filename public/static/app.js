@@ -50,6 +50,63 @@
     });
   }
 
+  var aiForm = document.getElementById('ai-generate-form');
+  if (aiForm) {
+    var aiPrompt = document.getElementById('ai-prompt');
+    var aiButton = document.getElementById('ai-generate-button');
+    var aiResult = document.getElementById('ai-result');
+    var aiResultTitle = document.getElementById('ai-result-title');
+    var aiResultStatus = document.getElementById('ai-result-status');
+
+    aiForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var prompt = aiPrompt ? aiPrompt.value.trim() : '';
+      if (!prompt || !aiButton || !aiResult || !aiResultTitle || !aiResultStatus) return;
+
+      aiButton.disabled = true;
+      aiButton.classList.add('loading');
+      aiButton.querySelector('span').textContent = 'Memproses';
+      aiResultStatus.textContent = 'Memproses';
+      aiResultStatus.className = 'ai-result-status working';
+      aiResultTitle.textContent = 'Gateway sedang bekerja.';
+      aiResult.textContent = 'Mohon tunggu. Permintaan sedang diproses dengan aman.';
+
+      fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      })
+        .then(function (response) {
+          return response.json().catch(function () {
+            return { ok: false, error: 'Layanan mengembalikan respons yang tidak valid.' };
+          }).then(function (payload) {
+            return { response: response, payload: payload };
+          });
+        })
+        .then(function (result) {
+          if (!result.response.ok || !result.payload.ok) {
+            throw new Error(result.payload.error || 'Permintaan AI tidak dapat diproses.');
+          }
+
+          aiResultTitle.textContent = 'Jawaban dari AI Gateway.';
+          aiResultStatus.textContent = 'Selesai';
+          aiResultStatus.className = 'ai-result-status success';
+          aiResult.textContent = result.payload.result;
+        })
+        .catch(function (error) {
+          aiResultTitle.textContent = 'Permintaan belum berhasil.';
+          aiResultStatus.textContent = 'Gagal';
+          aiResultStatus.className = 'ai-result-status failed';
+          aiResult.textContent = error.message || 'Terjadi gangguan saat menghubungi AI Gateway.';
+        })
+        .finally(function () {
+          aiButton.disabled = false;
+          aiButton.classList.remove('loading');
+          aiButton.querySelector('span').textContent = 'Generate';
+        });
+    });
+  }
+
   var sprintLabel = document.getElementById('sprint-day-label');
   if (sprintLabel) {
     fetch('/api/sprint')

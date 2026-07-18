@@ -81,3 +81,40 @@ export const DashboardHome = (props: { gatewayConfigured: boolean }) => (
     </section>
   </DashboardShell>
 )
+
+export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
+  <DashboardShell active="ai-hub" title="AI Hub" eyebrow="AI Gateway v0.1">
+    <section class="ai-hub-layout">
+      <form id="ai-generate-form" class="ai-composer">
+        <div class="ai-composer-head">
+          <div>
+            <span class="panel-label">Text generation</span>
+            <h2>Tulis konteks atau pertanyaan.</h2>
+          </div>
+          <div class={`service-status ${props.gatewayConfigured ? 'configured' : 'unconfigured'}`}>
+            <span aria-hidden="true"></span>
+            {props.gatewayConfigured ? 'Gateway siap' : 'Gateway belum siap'}
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="ai-prompt">Prompt</label>
+          <textarea id="ai-prompt" name="prompt" required maxlength="20000" placeholder="Contoh: Buat kerangka pesan produk yang menjelaskan manfaat tanpa klaim berlebihan."></textarea>
+        </div>
+        <div class="ai-composer-actions">
+          <p>Maksimum 20.000 karakter. Jawaban dibuat melalui Gemini.</p>
+          <button id="ai-generate-button" class="btn btn-gold" type="submit">
+            <span>Generate</span><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+          </button>
+        </div>
+        {!props.gatewayConfigured ? <p class="ai-config-notice" role="status">Layanan AI belum dikonfigurasi. Permintaan akan menampilkan error 503 yang aman sampai <code>GEMINI_API_KEY</code> tersedia.</p> : null}
+      </form>
+      <section id="ai-result-panel" class="ai-result-panel" aria-labelledby="ai-result-title" aria-live="polite">
+        <div class="ai-result-head">
+          <div><span class="panel-label">Output</span><h2 id="ai-result-title">Hasil akan muncul di sini.</h2></div>
+          <span id="ai-result-status" class="ai-result-status">Siap</span>
+        </div>
+        <pre id="ai-result" class="ai-result">Masukkan prompt yang jelas, lalu pilih Generate.</pre>
+      </section>
+    </section>
+  </DashboardShell>
+)

@@ -10,7 +10,7 @@ import {
   authenticateOwner, clearOwnerSession, hasValidOwnerSession, LoginPanel,
   requireOwner, safeDashboardPath, type OwnerBindings
 } from './auth'
-import { DashboardHome } from './dashboard'
+import { AIHubPage, DashboardHome } from './dashboard'
 import {
   META, PILLARS, BRANDS, SPRINT, REVENUE, D90_MIX, TARGETS,
   DECISIONS, GAPS, GAP_STATS, MARKET, LEGAL, BARBERKAS, PUBLIC_META,
@@ -85,6 +85,17 @@ app.get('/dashboard', (c) => {
   return c.html(
     <Layout title="Dashboard — SparkMind" description="Ruang kerja internal pemilik SparkMind." noIndex>
       <DashboardHome gatewayConfigured={gatewayConfigured} />
+    </Layout>
+  )
+})
+
+app.get('/dashboard/ai-hub', (c) => {
+  c.header('Cache-Control', 'no-store')
+  const gatewayConfigured = Boolean(c.env.GEMINI_API_KEY?.trim())
+
+  return c.html(
+    <Layout title="AI Hub — Dashboard SparkMind" description="Gunakan AI Gateway SparkMind dari ruang kerja pemilik." noIndex>
+      <AIHubPage gatewayConfigured={gatewayConfigured} />
     </Layout>
   )
 })
