@@ -15,7 +15,7 @@ export const statusBadge = (s: Brand['status']) => {
 export const Nav = (props: { active: string }) => (
   <header id="topnav">
     <a href="/" class="brand-mark" aria-label="SparkMind — Beranda">
-      <span class="brand-symbol" aria-hidden="true">S</span>
+      <img class="brand-symbol" src="/static/brand/sparkmind-symbol.svg" alt="" aria-hidden="true" />
       <span>Spark<span>Mind</span></span>
     </a>
     <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="primary-nav">
@@ -36,7 +36,7 @@ export const Footer = () => (
     <div class="foot-grid">
       <section>
         <a href="/" class="brand-mark" aria-label="SparkMind — Beranda">
-          <span class="brand-symbol" aria-hidden="true">S</span>
+          <img class="brand-symbol" src="/static/brand/sparkmind-symbol.svg" alt="" aria-hidden="true" />
           <span>Spark<span>Mind</span></span>
         </a>
         <p class="muted footer-statement">Produk AI yang benar-benar jalan dan pengetahuan yang membantu bisnis kecil membangun fondasi digitalnya sendiri.</p>
