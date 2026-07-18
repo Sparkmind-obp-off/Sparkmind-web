@@ -83,37 +83,61 @@ export const DashboardHome = (props: { gatewayConfigured: boolean }) => (
 )
 
 export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
-  <DashboardShell active="ai-hub" title="AI Hub" eyebrow="AI Gateway v0.1">
-    <section class="ai-hub-layout">
-      <form id="ai-generate-form" class="ai-composer">
-        <div class="ai-composer-head">
-          <div>
-            <span class="panel-label">Text generation</span>
-            <h2>Tulis konteks atau pertanyaan.</h2>
-          </div>
-          <div class={`service-status ${props.gatewayConfigured ? 'configured' : 'unconfigured'}`}>
-            <span aria-hidden="true"></span>
-            {props.gatewayConfigured ? 'Gateway siap' : 'Gateway belum siap'}
-          </div>
+  <DashboardShell active="ai-hub" title="AI Hub" eyebrow="AI workspace v0.1">
+    <section class="ai-hub" aria-labelledby="ai-hub-intro-title">
+      <header class="ai-hub-intro">
+        <div>
+          <span class="panel-label">Pilih cara bekerja</span>
+          <h2 id="ai-hub-intro-title">Satu ruang, tiga mode AI.</h2>
+          <p>Gunakan mode yang sesuai dengan pekerjaan Anda. Setiap permintaan diproses langsung tanpa menyimpan riwayat di server.</p>
         </div>
-        <div class="form-field">
-          <label for="ai-prompt">Prompt</label>
-          <textarea id="ai-prompt" name="prompt" required maxlength="20000" placeholder="Contoh: Buat kerangka pesan produk yang menjelaskan manfaat tanpa klaim berlebihan."></textarea>
+        <div class={`service-status ${props.gatewayConfigured ? 'configured' : 'unconfigured'}`}>
+          <span aria-hidden="true"></span>
+          {props.gatewayConfigured ? 'Gemini siap' : 'Gemini belum siap'}
         </div>
-        <div class="ai-composer-actions">
-          <p>Maksimum 20.000 karakter. Jawaban dibuat melalui Gemini.</p>
-          <button id="ai-generate-button" class="btn btn-gold" type="submit">
-            <span>Generate</span><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
-          </button>
+      </header>
+
+      <nav class="ai-mode-tabs" role="tablist" aria-label="Mode AI Hub">
+        <button id="ai-tab-text" class="ai-mode-tab active" type="button" role="tab" aria-selected="true" aria-controls="ai-panel-text">
+          <i class="fas fa-pen-nib" aria-hidden="true"></i><span>Generate Text</span>
+        </button>
+        <button class="ai-mode-tab" type="button" role="tab" aria-selected="false" disabled title="Ditambahkan pada bagian Chat">
+          <i class="fas fa-comments" aria-hidden="true"></i><span>Chat</span>
+        </button>
+        <button class="ai-mode-tab" type="button" role="tab" aria-selected="false" disabled title="Ditambahkan pada bagian Generate Image">
+          <i class="fas fa-image" aria-hidden="true"></i><span>Generate Image</span>
+        </button>
+      </nav>
+
+      <section id="ai-panel-text" class="ai-mode-panel" role="tabpanel" aria-labelledby="ai-tab-text">
+        <div class="ai-hub-layout">
+          <form id="ai-generate-form" class="ai-composer">
+            <div class="ai-composer-head">
+              <div>
+                <span class="panel-label">Generate text</span>
+                <h2>Ubah arahan menjadi draf.</h2>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="ai-prompt">Prompt</label>
+              <textarea id="ai-prompt" name="prompt" required maxlength="20000" placeholder="Contoh: Buat kerangka pesan produk yang menjelaskan manfaat tanpa klaim berlebihan."></textarea>
+            </div>
+            <div class="ai-composer-actions">
+              <p>Maksimum 20.000 karakter. Jawaban dibuat melalui Gemini.</p>
+              <button id="ai-generate-button" class="btn btn-gold" type="submit">
+                <span>Generate</span><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+              </button>
+            </div>
+            {!props.gatewayConfigured ? <p class="ai-config-notice" role="status">Layanan AI belum dikonfigurasi. Permintaan akan menampilkan error 503 yang aman sampai <code>GEMINI_API_KEY</code> tersedia.</p> : null}
+          </form>
+          <section id="ai-result-panel" class="ai-result-panel" aria-labelledby="ai-result-title" aria-live="polite">
+            <div class="ai-result-head">
+              <div><span class="panel-label">Output</span><h2 id="ai-result-title">Hasil akan muncul di sini.</h2></div>
+              <span id="ai-result-status" class="ai-result-status">Siap</span>
+            </div>
+            <pre id="ai-result" class="ai-result">Masukkan prompt yang jelas, lalu pilih Generate.</pre>
+          </section>
         </div>
-        {!props.gatewayConfigured ? <p class="ai-config-notice" role="status">Layanan AI belum dikonfigurasi. Permintaan akan menampilkan error 503 yang aman sampai <code>GEMINI_API_KEY</code> tersedia.</p> : null}
-      </form>
-      <section id="ai-result-panel" class="ai-result-panel" aria-labelledby="ai-result-title" aria-live="polite">
-        <div class="ai-result-head">
-          <div><span class="panel-label">Output</span><h2 id="ai-result-title">Hasil akan muncul di sini.</h2></div>
-          <span id="ai-result-status" class="ai-result-status">Siap</span>
-        </div>
-        <pre id="ai-result" class="ai-result">Masukkan prompt yang jelas, lalu pilih Generate.</pre>
       </section>
     </section>
   </DashboardShell>
