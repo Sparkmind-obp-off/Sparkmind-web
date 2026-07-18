@@ -104,7 +104,7 @@ export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
         <button id="ai-tab-chat" class="ai-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="ai-panel-chat" data-ai-mode="chat" tabindex="-1">
           <i class="fas fa-comments" aria-hidden="true"></i><span>Chat</span>
         </button>
-        <button class="ai-mode-tab" type="button" role="tab" aria-selected="false" disabled title="Ditambahkan pada bagian Generate Image">
+        <button id="ai-tab-image" class="ai-mode-tab" type="button" role="tab" aria-selected="false" aria-controls="ai-panel-image" data-ai-mode="image" tabindex="-1">
           <i class="fas fa-image" aria-hidden="true"></i><span>Generate Image</span>
         </button>
       </nav>
@@ -166,6 +166,43 @@ export const AIHubPage = (props: { gatewayConfigured: boolean }) => (
           <p id="ai-chat-status" class="ai-chat-status" role="status">Maksimum 50 pesan atau 100.000 karakter per permintaan.</p>
           {!props.gatewayConfigured ? <p class="ai-config-notice" role="status">Layanan AI belum dikonfigurasi. Permintaan akan menampilkan error 503 yang aman sampai <code>GEMINI_API_KEY</code> tersedia.</p> : null}
         </section>
+      </section>
+
+      <section id="ai-panel-image" class="ai-mode-panel" role="tabpanel" aria-labelledby="ai-tab-image" hidden>
+        <div class="ai-image-layout">
+          <form id="ai-image-form" class="ai-composer ai-image-composer">
+            <div class="ai-composer-head">
+              <div>
+                <span class="panel-label">Nano Banana 2</span>
+                <h2>Ubah deskripsi menjadi gambar.</h2>
+                <p>Jelaskan subjek, gaya, suasana, komposisi, dan detail penting secara spesifik.</p>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="ai-image-prompt">Prompt gambar</label>
+              <textarea id="ai-image-prompt" name="prompt" required maxlength="10000" placeholder="Contoh: Foto produk kopi lokal di atas meja kayu gelap, cahaya pagi hangat, komposisi editorial minimal, tanpa teks."></textarea>
+            </div>
+            <div class="ai-composer-actions">
+              <p>Satu gambar persegi 1K per permintaan. Gambar tidak disimpan oleh aplikasi.</p>
+              <button id="ai-image-button" class="btn btn-gold" type="submit">
+                <span>Generate</span><i class="fas fa-image" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p id="ai-image-status" class="ai-chat-status" role="status">Siap membuat gambar baru.</p>
+            {!props.gatewayConfigured ? <p class="ai-config-notice" role="status">Layanan AI belum dikonfigurasi. Permintaan akan menampilkan error 503 yang aman sampai <code>GEMINI_API_KEY</code> tersedia.</p> : null}
+          </form>
+          <section class="ai-image-preview" aria-labelledby="ai-image-preview-title" aria-live="polite">
+            <header class="ai-result-head">
+              <div><span class="panel-label">Preview</span><h2 id="ai-image-preview-title">Gambar akan muncul di sini.</h2></div>
+              <a id="ai-image-download" class="btn btn-ghost ai-image-download" href="#" download="sparkmind-ai-image.png" hidden>Unduh</a>
+            </header>
+            <div id="ai-image-canvas" class="ai-image-canvas">
+              <i class="fas fa-image" aria-hidden="true"></i>
+              <p>Masukkan prompt yang jelas, lalu pilih Generate.</p>
+              <img id="ai-image-output" alt="Gambar yang dibuat oleh AI berdasarkan prompt" hidden />
+            </div>
+          </section>
+        </div>
       </section>
     </section>
   </DashboardShell>

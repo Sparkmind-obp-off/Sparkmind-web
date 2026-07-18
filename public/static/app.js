@@ -222,6 +222,67 @@
     }
   }
 
+  var aiImageForm = document.getElementById('ai-image-form');
+  if (aiImageForm) {
+    var aiImagePrompt = document.getElementById('ai-image-prompt');
+    var aiImageButton = document.getElementById('ai-image-button');
+    var aiImageStatus = document.getElementById('ai-image-status');
+    var aiImageOutput = document.getElementById('ai-image-output');
+    var aiImageCanvas = document.getElementById('ai-image-canvas');
+    var aiImageTitle = document.getElementById('ai-image-preview-title');
+    var aiImageDownload = document.getElementById('ai-image-download');
+
+    aiImageForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var prompt = aiImagePrompt ? aiImagePrompt.value.trim() : '';
+      if (!prompt || !aiImageButton || !aiImageStatus || !aiImageOutput || !aiImageCanvas || !aiImageTitle || !aiImageDownload) return;
+
+      aiImageButton.disabled = true;
+      aiImageButton.classList.add('loading');
+      aiImageButton.querySelector('span').textContent = 'Membuat';
+      aiImageStatus.textContent = 'Gemini sedang membuat gambar. Proses ini dapat memerlukan beberapa saat…';
+      aiImageStatus.className = 'ai-chat-status working';
+      aiImageTitle.textContent = 'Gambar sedang dibuat.';
+
+      fetch('/api/ai/generate-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt })
+      })
+        .then(function (response) {
+          return response.json().catch(function () {
+            return { ok: false, error: 'Layanan mengembalikan respons yang tidak valid.' };
+          }).then(function (payload) {
+            return { response: response, payload: payload };
+          });
+        })
+        .then(function (result) {
+          if (!result.response.ok || !result.payload.ok) {
+            throw new Error(result.payload.error || 'Gambar tidak dapat dibuat.');
+          }
+          var imageUrl = 'data:' + result.payload.mimeType + ';base64,' + result.payload.imageBase64;
+          aiImageOutput.src = imageUrl;
+          aiImageOutput.hidden = false;
+          aiImageCanvas.classList.add('has-image');
+          aiImageDownload.href = imageUrl;
+          aiImageDownload.hidden = false;
+          aiImageTitle.textContent = 'Gambar berhasil dibuat.';
+          aiImageStatus.textContent = 'Selesai. Gambar tersedia hanya di halaman ini dan tidak disimpan oleh aplikasi.';
+          aiImageStatus.className = 'ai-chat-status success';
+        })
+        .catch(function (error) {
+          aiImageTitle.textContent = 'Pembuatan gambar belum berhasil.';
+          aiImageStatus.textContent = error.message || 'Terjadi gangguan saat menghubungi layanan gambar AI.';
+          aiImageStatus.className = 'ai-chat-status failed';
+        })
+        .finally(function () {
+          aiImageButton.disabled = false;
+          aiImageButton.classList.remove('loading');
+          aiImageButton.querySelector('span').textContent = 'Generate';
+        });
+    });
+  }
+
   var sprintLabel = document.getElementById('sprint-day-label');
   if (sprintLabel) {
     fetch('/api/sprint')

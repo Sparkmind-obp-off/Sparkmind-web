@@ -7,6 +7,7 @@ import legal from './legal'
 import { runGateway } from './ai/gateway'
 import { GatewayError, type GatewayFailure } from './ai/types'
 import { chatWithGemini, type GeminiChatMessage } from './ai/providers/gemini'
+import { generateImageWithGemini } from './ai/providers/gemini-image'
 import {
   authenticateOwner, clearOwnerSession, hasValidOwnerSession, LoginPanel,
   requireOwner, safeDashboardPath, type OwnerBindings
@@ -220,6 +221,39 @@ app.post('/api/ai/chat', async (c) => {
     }
 
     return c.json<GatewayFailure>({ ok: false, error: 'Terjadi gangguan internal saat memproses percakapan AI.' }, 500)
+  }
+})
+
+app.post('/api/ai/generate-image', async (c) => {
+  let body: unknown
+
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json<GatewayFailure>({ ok: false, error: 'Body permintaan harus berupa JSON yang valid.' }, 400)
+  }
+
+  if (!body || typeof body !== 'object' || !('prompt' in body) || typeof body.prompt !== 'string') {
+    return c.json<GatewayFailure>({ ok: false, error: 'Field prompt wajib berupa teks.' }, 400)
+  }
+
+  const prompt = body.prompt.trim()
+  if (!prompt) {
+    return c.json<GatewayFailure>({ ok: false, error: 'Prompt tidak boleh kosong.' }, 400)
+  }
+  if (prompt.length > 10000) {
+    return c.json<GatewayFailure>({ ok: false, error: 'Prompt terlalu panjang. Maksimum 10.000 karakter.' }, 413)
+  }
+
+  try {
+    const image = await generateImageWithGemini(c.env.GEMINI_API_KEY, prompt)
+    return c.json({ ok: true as const, ...image })
+  } catch (error) {
+    if (error instanceof GatewayError) {
+      return c.json<GatewayFailure>({ ok: false, error: error.message }, error.status)
+    }
+
+    return c.json<GatewayFailure>({ ok: false, error: 'Terjadi gangguan internal saat membuat gambar.' }, 500)
   }
 })
 
