@@ -23,7 +23,8 @@ export const createGeminiProvider = (apiKey: string | undefined): Provider => ({
   name: 'gemini',
 
   async generate(request: GatewayRequest): Promise<string> {
-    if (!apiKey?.trim()) {
+    const credential = apiKey?.trim()
+    if (!credential) {
       throw new GatewayError('Layanan AI belum dikonfigurasi.', 503)
     }
 
@@ -31,10 +32,13 @@ export const createGeminiProvider = (apiKey: string | undefined): Provider => ({
 
     try {
       response = await fetch(
-        `${GEMINI_API_BASE}/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`,
+        `${GEMINI_API_BASE}/${GEMINI_MODEL}:generateContent`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': credential
+          },
           body: JSON.stringify({
             contents: [{ role: 'user', parts: [{ text: request.prompt }] }],
             generationConfig: { responseMimeType: 'text/plain' }
