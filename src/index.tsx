@@ -4,13 +4,19 @@ import { serveStatic } from 'hono/cloudflare-workers'
 import { Layout } from './renderer'
 import { Nav, Footer, statusBadge } from './components'
 import legal from './legal'
+import { runGateway } from './ai/gateway'
+import { GatewayError, type GatewayFailure } from './ai/types'
 import {
   META, PILLARS, BRANDS, SPRINT, REVENUE, D90_MIX, TARGETS,
   DECISIONS, GAPS, GAP_STATS, MARKET, LEGAL, BARBERKAS, PUBLIC_META,
   PUBLIC_PRODUCTS, ARTICLES, findArticle, currentSprintDay, rupiah
 } from './data'
 
-const app = new Hono()
+type Bindings = {
+  GEMINI_API_KEY?: string
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('/api/*', cors())
 app.use('/static/*', serveStatic({ root: './public' }))
@@ -28,6 +34,33 @@ app.get('/favicon.svg', (c) => c.body(FAVICON, 200, { 'Content-Type': 'image/svg
 // JSON API — Sprint / Revenue / Doctrine state (public-safe)
 // ════════════════════════════════════════════════════════════════
 app.get('/api/health', (c) => c.json({ ok: true, doctrine: META.doctrineVersion, ts: Date.now() }))
+
+app.post('/api/ai/generate', async (c) => {
+  let body: unknown
+
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json<GatewayFailure>({ ok: false, error: 'Body permintaan harus berupa JSON yang valid.' }, 400)
+  }
+
+  if (!body || typeof body !== 'object' || !('prompt' in body) || typeof body.prompt !== 'string') {
+    return c.json<GatewayFailure>({ ok: false, error: 'Field prompt wajib berupa teks.' }, 400)
+  }
+
+  try {
+    return c.json(await runGateway(
+      { prompt: body.prompt, type: 'text' },
+      { geminiApiKey: c.env.GEMINI_API_KEY }
+    ))
+  } catch (error) {
+    if (error instanceof GatewayError) {
+      return c.json<GatewayFailure>({ ok: false, error: error.message }, error.status)
+    }
+
+    return c.json<GatewayFailure>({ ok: false, error: 'Terjadi gangguan internal saat memproses permintaan AI.' }, 500)
+  }
+})
 
 app.get('/api/state', (c) => {
   const day = currentSprintDay()
