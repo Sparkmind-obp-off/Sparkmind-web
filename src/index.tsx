@@ -7,12 +7,16 @@ import legal from './legal'
 import { runGateway } from './ai/gateway'
 import { GatewayError, type GatewayFailure } from './ai/types'
 import {
+  authenticateOwner, clearOwnerSession, hasValidOwnerSession, LoginPanel,
+  requireOwner, safeDashboardPath, type OwnerBindings
+} from './auth'
+import {
   META, PILLARS, BRANDS, SPRINT, REVENUE, D90_MIX, TARGETS,
   DECISIONS, GAPS, GAP_STATS, MARKET, LEGAL, BARBERKAS, PUBLIC_META,
   PUBLIC_PRODUCTS, ARTICLES, findArticle, currentSprintDay, rupiah
 } from './data'
 
-type Bindings = {
+type Bindings = OwnerBindings & {
   GEMINI_API_KEY?: string
 }
 
@@ -20,6 +24,8 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('/api/*', cors())
 app.use('/static/*', serveStatic({ root: './public' }))
+app.use('/dashboard', requireOwner())
+app.use('/dashboard/*', requireOwner())
 
 // Inline official SparkMind symbol for favicon responses.
 const FAVICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" rx="52" fill="#090A0B"/><path fill="#D4AF37" d="M38 48h82l43 43-25 25-31-31H78l28 28-25 25-43-43 25-25h76l-22-22H38z"/><path fill="#F4EFE4" d="M218 208h-82l-43-43 25-25 31 31h29l-28-28 25-25 43 43-25 25h-76l22 22h79z"/><path fill="#090A0B" d="m128 116 12 12-12 12-12-12z"/></svg>`
@@ -29,6 +35,44 @@ const notFoundResponse = () => new Response(
 )
 app.get('/favicon.ico', (c) => c.body(FAVICON, 200, { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' }))
 app.get('/favicon.svg', (c) => c.body(FAVICON, 200, { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400' }))
+
+// ════════════════════════════════════════════════════════════════
+// OWNER LOGIN — intentionally single-owner, not multi-user
+// ════════════════════════════════════════════════════════════════
+app.get('/login', async (c) => {
+  const nextPath = safeDashboardPath(c.req.query('next'))
+  c.header('Cache-Control', 'no-store')
+
+  if (await hasValidOwnerSession(c)) return c.redirect(nextPath)
+
+  return c.html(
+    <Layout title="Masuk — Dashboard SparkMind" description="Akses pemilik ke dashboard SparkMind." noIndex>
+      <LoginPanel nextPath={nextPath} />
+    </Layout>
+  )
+})
+
+app.post('/login', async (c) => {
+  const nextPath = safeDashboardPath(c.req.query('next'))
+  const body = await c.req.parseBody()
+  const password = typeof body.password === 'string' ? body.password : ''
+  c.header('Cache-Control', 'no-store')
+
+  if (await authenticateOwner(c, password)) return c.redirect(nextPath)
+
+  return c.html(
+    <Layout title="Masuk — Dashboard SparkMind" description="Akses pemilik ke dashboard SparkMind." noIndex>
+      <LoginPanel error="Password salah." nextPath={nextPath} />
+    </Layout>,
+    401
+  )
+})
+
+app.get('/logout', (c) => {
+  clearOwnerSession(c)
+  c.header('Cache-Control', 'no-store')
+  return c.redirect('/login')
+})
 
 // ════════════════════════════════════════════════════════════════
 // JSON API — Sprint / Revenue / Doctrine state (public-safe)

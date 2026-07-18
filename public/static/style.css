@@ -464,3 +464,21 @@ main { width: 100%; }
   .foot-grid { grid-template-columns: 1fr; }
   .article-header h1 { font-size: 2.4rem; }
 }
+
+/* ── Single-owner login ─────────────────────────────────────── */
+.login-page {
+  min-height: 100vh; display: grid; place-items: center;
+  max-width: none; padding: clamp(24px, 6vw, 72px);
+  background: radial-gradient(circle at 50% 0%, rgba(212,175,55,.13), transparent 44%);
+}
+.login-card {
+  width: min(100%, 460px); padding: clamp(28px, 5vw, 48px);
+  border: 1px solid var(--line-gold); background: rgba(17,18,20,.94);
+  box-shadow: 0 28px 90px rgba(0,0,0,.32);
+}
+.login-brand { margin-bottom: 48px; }
+.login-card h1 { font: 600 clamp(2rem, 6vw, 3.25rem)/1.05 'Playfair Display', serif; letter-spacing: -.035em; margin-bottom: 16px; }
+.login-card > .muted { font-size: .92rem; }
+.login-form { margin-top: 30px; }
+.login-form .btn { width: 100%; justify-content: center; }
+.form-error { margin-top: 22px; padding: 12px 14px; border: 1px solid rgba(239,68,68,.45); background: rgba(239,68,68,.1); color: #fca5a5; font-size: .85rem; }
