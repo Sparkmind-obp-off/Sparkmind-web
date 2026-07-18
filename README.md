@@ -28,6 +28,8 @@ Detail kepemilikan dan dokumen layanan tersedia melalui `/legal` dan `/legal/own
 - Seluruh route dan isi Legal dipertahankan.
 - API publik lama dipertahankan.
 - AI Gateway v0.1 internal dengan adapter Gemini berbasis `fetch()` native, validasi input, dan error handling terstruktur.
+- Login pemilik tunggal berbasis password Cloudflare secret, session token HMAC acak, dan cookie `HttpOnly`, `Secure`, `SameSite=Lax` berumur enam jam.
+- Dashboard pemilik dengan status konfigurasi AI Gateway, AI Hub fungsional, serta placeholder jujur untuk Content, Assets, Brands, dan Settings.
 - Handler 404 berstatus HTTP 404 dan tidak terindeks.
 
 ## Entry URI
@@ -54,7 +56,23 @@ Detail kepemilikan dan dokumen layanan tersedia melalui `/legal` dan `/legal/own
 | `/legal/refund` | Kebijakan Refund |
 | `/legal/disclaimer` | Disclaimer |
 
-### Internal
+### Dashboard Pemilik
+
+| Method & Path | Keterangan |
+|---|---|
+| `GET /login` | Form login password tunggal; mendukung parameter aman `next=/dashboard/...` |
+| `POST /login` | Memvalidasi `DASHBOARD_OWNER_PASSWORD` dan membuat cookie sesi aman |
+| `GET /logout` | Menghapus cookie sesi dan kembali ke login |
+| `GET /dashboard` | Ringkasan dan status konfigurasi AI Gateway |
+| `GET /dashboard/ai-hub` | Form text generation yang memakai `POST /api/ai/generate` |
+| `GET /dashboard/content` | Placeholder jujur; belum dibangun |
+| `GET /dashboard/assets` | Placeholder jujur; belum dibangun |
+| `GET /dashboard/brands` | Placeholder jujur; Brand OS/Discovery belum dibangun |
+| `GET /dashboard/settings` | Placeholder jujur; belum dibangun |
+
+Semua route `/dashboard/*` dilindungi middleware `requireOwner()` dan mengarahkan pengunjung tanpa sesi valid ke `/login`.
+
+### Internal Lama
 
 | Path | Keterangan |
 |---|---|
@@ -63,7 +81,7 @@ Detail kepemilikan dan dokumen layanan tersedia melalui `/legal` dan `/legal/own
 | `/internal/revenue` | Revenue ledger lama |
 | `/internal/barberkas` | Capster Commit Hub lama |
 
-Route internal masih dapat dibuka langsung untuk menjaga data lama, tetapi tidak muncul di navigasi/footer publik dan ditandai `noindex, nofollow`.
+Route internal lama tetap dapat dibuka langsung untuk menjaga perilaku sebelumnya, tetapi tidak muncul di navigasi/footer publik dan ditandai `noindex, nofollow`.
 
 ### API
 
@@ -85,6 +103,8 @@ Route internal masih dapat dibuka langsung untuk menjaga data lama, tetapi tidak
 - `src/ai/gateway/` memvalidasi permintaan, memilih provider, dan mengekspor `runGateway()`.
 - `src/ai/providers/gemini.ts` memanggil Gemini dengan `fetch()` native; API key hanya dibaca dari binding Cloudflare dan dikirim melalui header `x-goog-api-key`, bukan URL.
 - `src/ai/types.ts` mendefinisikan kontrak request, response, provider, dan error terstruktur.
+- `src/auth.tsx` menangani validasi password, token sesi bertanda tangan HMAC, cookie aman, login, logout, dan middleware proteksi dashboard.
+- `src/dashboard.tsx` menyediakan shell, navigasi, dashboard utama, AI Hub, dan placeholder milestone berikutnya.
 - `src/legal.tsx` berisi dokumen legal resmi dan tidak ditulis ulang dalam rebuild ini.
 - `src/components.tsx` menyediakan navigasi dan footer bersama.
 - `src/renderer.tsx` menyediakan layout HTML, metadata deskripsi, dan dukungan `noindex`.
@@ -98,7 +118,8 @@ Route internal masih dapat dibuka langsung untuk menjaga data lama, tetapi tidak
 1. Buka `/produk` untuk memilih alat berdasarkan masalah operasional yang ingin diselesaikan.
 2. Buka `/belajar` untuk membaca framework dan studi kasus berdasarkan kategori.
 3. Gunakan `/kontak` untuk menyiapkan email kepada SparkMind atau buka Instagram `@sparkmind.id`.
-4. Gunakan footer untuk mengakses semua dokumen legal resmi.
+4. Pemilik membuka `/login`, memasukkan password dashboard, lalu memakai `/dashboard/ai-hub` untuk text generation.
+5. Gunakan footer untuk mengakses semua dokumen legal resmi.
 
 ## Pengembangan Lokal
 
@@ -115,6 +136,7 @@ Untuk menguji gateway secara lokal, buat `.dev.vars` (file ini diabaikan Git) da
 
 ```dotenv
 GEMINI_API_KEY=your_api_key
+DASHBOARD_OWNER_PASSWORD=use_a_long_unique_password
 ```
 
 Contoh request:
@@ -125,7 +147,14 @@ curl -X POST http://localhost:3000/api/ai/generate \
   -d '{"prompt":"Jelaskan kedaulatan data untuk UMKM."}'
 ```
 
-Tanpa secret tersebut, endpoint merespons HTTP `503` dengan JSON yang aman dan terstruktur, bukan crash kosong. Untuk production, set `GEMINI_API_KEY` sebagai Cloudflare Pages secret—jangan simpan secret di source atau commit Git.
+Tanpa `GEMINI_API_KEY`, endpoint merespons HTTP `503` dengan JSON yang aman dan terstruktur, bukan crash kosong. Tanpa `DASHBOARD_OWNER_PASSWORD`, login selalu gagal dengan pesan generik yang sama.
+
+Set kedua secret untuk production melalui Cloudflare Pages—jangan simpan secret di source atau commit Git:
+
+```bash
+npx wrangler pages secret put GEMINI_API_KEY --project-name sparkmind-web
+npx wrangler pages secret put DASHBOARD_OWNER_PASSWORD --project-name sparkmind-web
+```
 
 ## Tech Stack
 
@@ -140,6 +169,8 @@ Tanpa secret tersebut, endpoint merespons HTTP `503` dengan JSON yang aman dan t
 - Backend newsletter dengan double opt-in.
 - Penyimpanan formulir kontak menggunakan D1 atau KV.
 - Publikasi Event Tracker PWT; produk ini tetap internal sampai siap untuk pelanggan luar.
+- Fungsi nyata untuk menu dashboard Content, Assets, Brands, dan Settings; saat ini semuanya placeholder eksplisit.
+- Sistem multi-user, akun pelanggan, OAuth, dan social login; dashboard saat ini sengaja single-owner.
 - Billing, usage metering, caching, observability, multi-provider fallback, SDK publik, marketplace, dan plugin system untuk AI Gateway.
 - Deployment rebuild ke production; menunggu persetujuan eksplisit pemilik.
 
@@ -154,7 +185,7 @@ Tanpa secret tersebut, endpoint merespons HTTP `503` dengan JSON yang aman dan t
 
 - **Platform target:** Cloudflare Pages
 - **Project target:** `sparkmind-web` (terpisah dari project lama `sparkmind-foundry`)
-- **Branch pengembangan saat ini:** `main`
+- **Branch pengembangan saat ini:** `feat/dashboard-shell` (target PR: `main`)
 - **Preview sandbox:** aktif untuk sesi pengembangan
 - **Production rebuild:** belum dideploy; production yang ada tidak diubah dalam sesi ini
 - **Terakhir diperbarui:** 18 Juli 2026
